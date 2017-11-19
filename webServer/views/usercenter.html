@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title> 微尺伴客 </title>
+		<meta name="format-detection" content="telephone=no, address=no">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<!-- apple devices fullscreen -->
+		<meta name="apple-touch-fullscreen" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+		<script type="text/javascript" src="/javascripts/util.js"></script>
+		<script src="/javascripts/JsBarcode.all.js"></script>
+		<!--<script src="http://libs.cncdn.cn/jsbarcode/3.5.8/barcodes/JsBarcode.codabar.min.js"></script>-->
+		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/jquery-1.11.1.min.js?v=20160906"></script>
+		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/mui.min.js?v=20160906"></script>
+		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/app/common.js?v=20160906"></script>
+		<link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet">
+		<link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet">
+		<script type="text/javascript">
+			if(navigator.appName == 'Microsoft Internet Explorer') {
+				if(navigator.userAgent.indexOf("MSIE 5.0") > 0 || navigator.userAgent.indexOf("MSIE 6.0") > 0 || navigator.userAgent.indexOf("MSIE 7.0") > 0) {
+					alert('您使用的 IE 浏览器版本过低, 推荐使用 Chrome 浏览器或 IE8 及以上版本浏览器.');
+				}
+			}
+			window.sysinfo = {
+				'uniacid': '4',
+				'acid': '4',
+				'siteroot': 'http://wechat.fangsuo.com/',
+				'siteurl': 'http://wechat.fangsuo.com/app/index.php?c=home&i=4&t=4',
+				'attachurl': 'http://wechat.fangsuo.com/attachment/',
+				'attachurl_local': 'http://wechat.fangsuo.com/attachment/',
+				'attachurl_remote': '',
+				'cookie': {
+					'pre': '127d_'
+				}
+			};
+			// jssdk config 对象
+			jssdkconfig = null || {};
+			// 是否启用调试
+			jssdkconfig.debug = false;
+			jssdkconfig.jsApiList = [
+				'checkJsApi',
+				'onMenuShareTimeline',
+				'onMenuShareAppMessage',
+				'onMenuShareQQ',
+				'onMenuShareWeibo',
+				'hideMenuItems',
+				'showMenuItems',
+				'hideAllNonBaseMenuItem',
+				'showAllNonBaseMenuItem',
+				'translateVoice',
+				'startRecord',
+				'stopRecord',
+				'onRecordEnd',
+				'playVoice',
+				'pauseVoice',
+				'stopVoice',
+				'uploadVoice',
+				'downloadVoice',
+				'chooseImage',
+				'previewImage',
+				'uploadImage',
+				'downloadImage',
+				'getNetworkType',
+				'openLocation',
+				'getLocation',
+				'hideOptionMenu',
+				'showOptionMenu',
+				'closeWindow',
+				'scanQRCode',
+				'chooseWXPay',
+				'openProductSpecificView',
+				'addCard',
+				'chooseCard',
+				'openCard',
+				'openAddress'
+			];
+		</script>
+	</head>
+
+	<body>
+		<div class="container container-fill">
+			<link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/fangsuo_v2.css?v=17070301" rel="stylesheet">
+			<!--link href="http://wechat.fangsuo.net/addons/fangsuo/assets/css/fangsuo_v2.css" rel="stylesheet"-->
+
+			<style type="text/css">
+				.panles {
+					padding: 10px;
+					position: relative;
+					background: #FFF;
+					border-radius: 8px;
+					margin: 0 15px;
+					margin-bottom: 10px;
+					color: #b8b8b8;
+					font-size: 85%;
+				}
+				
+				.panles h2 {
+					font-size: 1.0em;
+					height: 38px;
+					line-height: 30px;
+					margin-left: -15px;
+				}
+				
+				.panles h2 span {
+					display: block;
+					float: left;
+					height: 30px;
+					background-color: #476968;
+					color: #FFF;
+					padding: 0 15px;
+				}
+				
+				.panles ul,
+				.panles ol {
+					margin: 0;
+					padding: 0;
+					margin-left: 20px;
+					color: #b8b8b8;
+					clear: both;
+					;
+				}
+				
+				.panles ul.list-01 {
+					margin-left: 0;
+					list-style: none;
+				}
+				
+				.list-01 li {
+					padding-left: 18px;
+					background-image: url("http://wechat.fangsuo.com/addons/fangsuo/assets/images/ico-li-01.png");
+					background-repeat: no-repeat;
+					background-position: 1px 10px;
+					background-size: 9px auto;
+				}
+			</style>
+
+			<div class="mui-content mc-login" style="padding-bottom: 15px;">
+				<div class="avatar mui-text-center">
+					<h1 class="fs_login_h1" style="color:#FF4040">会员中心<br><small style="color:#FF6347">The&nbsp; Member&nbsp; Center</small></h1>
+				</div>
+				<div class="panles" style="height: 140px;">
+					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding: 0;">
+						<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="height: 100px;">
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="margin-top: 10px;color: #FF6347;padding: 0;">
+								<%=username%>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="margin-top: 10px;color: #FF6347;padding: 0;"></div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;padding: 0;"><span>积分会员</span></div>
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;padding: 0;"><span><%=phone%></span></div>
+						</div>
+						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="height: 100px;padding-right: 0;">
+							<img src="http://www.whichbank.com.cn/assets/images/logo_.png" style="width: 80px;height: 80px;margin-top: 10px;margin-left: -20px;">
+						</div>
+						<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 70px;background-color: red;padding: 0;">
+							<img id="barcode1" style="width: 100%;height: 100%;" />
+						</div>-->
+						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 20px;text-align: center;padding: 0;">
+							<!--span> FS&nbsp;8005&nbsp;6303</span>-->
+						</div>
+
+					</div>
+				</div>
+				<div class="mui-text-center" style="margin-top:25px;margin-left: 15px;margin-right: 15px;">
+					<form id="logoutForm" action="/users/logout" method="get">
+						<a class="mui-btn mui-btn-success mui-btn-block log-in" onclick="logout()" style="background-color: #FF4040;border:0;">
+							退出会员中心
+						</a>
+					</form>
+				</div>
+			</div>
+			<script type="text/javascript">
+				//				$(function() {
+				//					options = {
+				//						//										format: "CODE39", //选择要使用的条形码类型
+				//						width: 2.5, //设置条之间的宽度
+				//						height: 60, //高度
+				//						displayValue: false, //是否在条形码下方显示文字
+				//						//										fontOptions: "bold italic", //使文字加粗体或变斜体
+				//						//										font: "fantasy", //设置文本的字体
+				//						//										textAlign: "left", //设置文本的水平对齐方式
+				//						//										textPosition: "top", //设置文本的垂直位置
+				//						//										fontSize: 15, //设置文本的大小
+				//						//										lineColor: "#2196f3", //设置条和文本的颜色。
+				//						//										margin: 15 //设置条形码周围的空白边距
+				//					};
+				//					JsBarcode("#barcode1", "15020078170", options);
+				//
+				//				});
+
+				function logout() {
+					document.getElementById("logoutForm").submit();
+				}
+			</script>
+	</body>
+
+</html>

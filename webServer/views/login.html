@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>微尺伴客</title>
+		<meta name="format-detection" content="telephone=no, address=no">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<!-- apple devices fullscreen -->
+		<meta name="apple-touch-fullscreen" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+		<script type="text/javascript" src="/javascripts/util.js"></script>
+		<script src="/javascripts/require.js"></script>
+		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/jquery-1.11.1.min.js?v=20160906"></script>
+		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/mui.min.js?v=20160906"></script>
+		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/app/common.js?v=20160906"></script>
+		<link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet">
+		<link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet">
+		<script type="text/javascript">
+			if(navigator.appName == 'Microsoft Internet Explorer') {
+				if(navigator.userAgent.indexOf("MSIE 5.0") > 0 || navigator.userAgent.indexOf("MSIE 6.0") > 0 || navigator.userAgent.indexOf("MSIE 7.0") > 0) {
+					alert('您使用的 IE 浏览器版本过低, 推荐使用 Chrome 浏览器或 IE8 及以上版本浏览器.');
+				}
+			}
+		</script>
+		<link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/fangsuo_v2.css?v=17051201" rel="stylesheet">
+		<style>
+			.f-heiti {
+				letter-spacing: 1px;
+			}
+			
+			.mui-text-muted {
+				color: #9e9e9e
+			}
+		</style>
+		<script type="text/javascript">
+			function checkMobile(data) {
+				if(data.phone.length !== 11 || !/^1[3|4|5|7|8][0-9]{9}$/.test(data.phone)) {
+					util.toast('请输入正确的手机号', '', 'error');
+					return false;
+				}
+				return true;
+			}
+
+			function checkInfo(data) {
+				if(!checkMobile(data)) {
+					return false;
+				}
+
+				if(data.code.length !== 6) {
+					util.toast('请输入正确的验证码', '', 'error');
+					return false;
+				}
+
+				return true
+			}
+
+			function sendCode() {
+				var data = {
+					phone: $('.js-mobile-val').val()
+				};
+				if(checkMobile(data)) {
+					confirmSendCode(data)
+				}
+			}
+
+			function sendRequest(request) {
+				var loading = $('<div class="mui-toast-container mui-active js-toast-loading"><div class="mui-toast-message"><div class="mui-toast-icon"><span class="fa fa-spinner fa-spin"></span></div>请求中</div></div>');
+				document.body.appendChild(loading[0]);
+				$.ajax({
+					type: "POST",
+					timeout: 10000,
+					url: request.url,
+					data: request.data,
+					dataType: "json",
+					success: function(res) {
+						console.log("res : " + res["status"]);
+						if(res['status'] != 1) {
+							return util.toast(res['message'], '', 'error');
+						} else {
+							//								return util.toast(res['message'], '');
+							//							不用提示
+							request.successCallback(res);
+						}
+					},
+					error: function(XMLHttpRequest, status) {
+						if(status == 'timeout') {
+							util.toast('请求超时，请稍后再试', '', 'error');
+						} else {
+							util.toast('请求失败，请稍后再试', '', 'error');
+						}
+					},
+					complete: function() {
+						loading.remove()
+					}
+				});
+			}
+
+			function sendRegister() {
+				document.getElementById("registerForm").submit();
+			}
+
+			function confirmSendCode(data) {
+				// };
+				//judge if is registered
+				var judgeRegister = {
+					url: "/users/judgeRegister",
+					data: {
+						phone: data.phone
+					},
+					successCallback: function() {
+						var confirmSendCode = {
+							url: "/idcode/sendCode",
+							data: data,
+							successCallback: function(data) {
+
+								var option = {
+									'showElement': $('.js-timer'),
+									'showTips': "%s秒后重新获取",
+									'btnTips': '<button class="mui-btn js-check-mobile">重新获取验证码</button>'
+								};
+								sendCodeUI(option, 60);
+
+							}
+						}
+						sendRequest(confirmSendCode);
+					}
+				}
+				sendRequest(judgeRegister);
+
+			}
+
+			function sendCodeUI(option, sec) {
+				option.showElement.html(option.showTips.replace("%s", sec));
+				option.showElement.attr('disabled', true);
+				var timer = setInterval(function() {
+					sec--;
+					if(sec <= 0) {
+						clearInterval(timer);
+						sec = 60;
+						option.showElement.html(option.btnTips);
+						option.showElement.attr('disabled', false);
+					} else {
+						option.showElement.html(option.showTips.replace("%s", sec));
+					}
+				}, 1000);
+			}
+
+			function confirmLogin() {
+				var data = {
+					phone: $('.js-mobile-val').val(),
+					code: $('.vercode').val(),
+
+				};
+				console.log(data);
+				if(checkInfo(data)) {
+					login(data)
+				}
+			}
+
+			function login(data) {
+				var loginDt = {
+					url: "/users/login",
+					data: data,
+					successCallback: function(data) {
+						//do nothing
+						util.toast('登陆成功', '');
+						setTimeout(function() {
+							window.location.href = data.url;
+						}, 1000);
+
+						//						window.location.href = "/users/usercenter";
+
+					}
+				}
+				sendRequest(loginDt);
+			}
+		</script>
+	</head>
+
+	<body>
+		<div class="container container-fill">
+			<div class="mui-content mc-login">
+				<div class="avatar mui-text-center">
+					<h1 class="fs_login_h1" style="color:#FF4040">会员登录<br>
+            <small style="color:#FF6347">Log&nbsp; in</small>
+        </h1>
+				</div>
+				<div class="mui-active mc-login-code" id="login-code">
+					<div class="js-sendcode">
+						<div class="mui-input-group mui-mt15">
+							<div class="mui-input-row">
+								<input name="mobile" class="js-mobile-val en" type="text" placeholder="请输入手机号码" />
+							</div>
+						</div>
+						<div class="mui-input-row">
+							<input name="code" class="vercode en" type="text" placeholder="验证码" />
+							<div class="getcode">
+								<div class="js-timer">
+									<button class="mui-btn js-check-mobile" onclick="sendCode()">获取验证码</button>
+								</div>
+							</div>
+						</div>
+						<div class="mui-text-center mui-text-muted mui-small" style="margin-top: 25px">
+							请填写注册微尺伴客会员时登记的手机号<br> 如遗忘或需更换手机号码
+							<br> 请致电
+							<span style="color: #707070;">微尺伴客客服</span>申诉找回
+						</div>
+
+						<div class="mui-text-center" style="margin-top:25px ">
+							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmLogin()" style="background-color: #FF4040;border:0;">
+                    进入会员中心
+                </button>
+						</div>
+					</div>
+				</div>
+				<div class="mui-content-padded">
+					<div class="mui-text-center mui-mt15 small">
+						<form id="registerForm" action="/users/register" method="get">
+							<a onclick="sendRegister()"><strong style="color: #FF6347;">会员注册</strong></a>
+						</form>
+					</div>
+					<!--<div class="mui-text-center mui-mt15 small">
+            <a href="">会员权益</a>
+        </div>-->
+				</div>
+			</div>
+		</div>
+	</body>
