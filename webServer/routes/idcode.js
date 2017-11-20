@@ -106,6 +106,7 @@ router.post('/sendCode', function(req, res) {
 	//
 	//		}
 	//	});
+	
 	client.execute('alibaba.aliqin.fc.sms.num.send', {
 			'fields': 'nick,type,sex,location',
 			'nick': 'sandbox_c_1',
@@ -113,7 +114,7 @@ router.post('/sendCode', function(req, res) {
 			'sms_type': 'normal',
 			'sms_free_sign_name': '身份验证',
 			'sms_param': "{code:'" + code + "',product:'微尺伴客'}",
-			'rec_num': '18765321992',
+			'rec_num': req.body.phone,
 			'sms_template_code': "SMS_13256683"
 		},
 		function(error, response) {

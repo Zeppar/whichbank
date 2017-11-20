@@ -10,7 +10,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var idcode = require('./routes/idcode');
 
-//TopClient = require('./topClient').TopClient;
+TopClient = require('./topClient').TopClient;
 //
 //var client = new TopClient({
 //                          'appkey':'24690012',
