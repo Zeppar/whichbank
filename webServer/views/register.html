@@ -20,6 +20,7 @@
 		<link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet">
 		<link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/fangsuo_v2.css" rel="stylesheet">
 		<link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/icons-extra.css" rel="stylesheet">
+		<link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 		<link href="/stylesheets/mui.picker.min.css" rel="stylesheet" />
 		<script src="/javascripts/mui.picker.min.js"></script>
 		<script type="text/javascript">
@@ -56,12 +57,6 @@
 							</div>
 						</div>
 
-						<!--<div class="mui-input-group">-->
-						<!--<div class="mui-input-row saomiao">-->
-						<!--<input id="ticket" name="ticket" class="en" type="text" placeholder="小票单号"/>-->
-						<!--<span id="sweep-btn" class="mui-icon-extra mui-icon-extra-sweep"></span>-->
-						<!--</div>-->
-						<!--</div>-->
 
 						<p class="mui-text-muted small" style="margin-top: 15px; color: #525252; padding-left: 1px; margin-bottom: 5px">
 							为保障您的权益，请完善以下资料：
@@ -275,7 +270,7 @@
 					var option = {
 						'showElement': $('.js-timer'),
 						'showTips': "%s秒后重新获取",
-						'btnTips': '<button class="mui-btn js-check-mobile">重新获取验证码</button>'
+						'btnTips': '<button class="mui-btn js-check-mobile" onclick="sendCode()">重新获取验证码</button>'
 					};
 					sendCodeUI(option, 60);
 				}
