@@ -10,7 +10,6 @@ var Alidayu = require('alidayujs');
 var codeSQL = require('../db/Codesql');
 var router = express.Router();
 
-
 // 使用DBConfig.js的配置信息创建一个MySQL连接池
 // var pool = mysql.createPool( dbConfig.mysql );
 
@@ -120,50 +119,65 @@ router.post('/login', function(req, res) {
 			if(results.length != 0) {
 				//find it
 				var code = results[0].code;
-				if(code == req.body.code) {
-					//login
-					//get data from database
-					connection.query(userSQL.getUserByPhone, [req.body.phone], function(_error, _results) {
-						if(_error)
-							throw _error
-						else {
-							if(_results.length != 0) {
-								// session
-								var user = {
-									'phone': req.body.phone,
-									'username': _results[0].name
-								};
-								req.session.user = user;
-
-								//delete code 
-								connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
-									if(error)
-										throw error;
-									else
-										console.log("success delete code!!!");
-								});
-								res.json({
-									"status": 1,
-									"message": "登陆成功",
-									"url": "/users/usercenter"
-								});
-							} else {
-								res.json({
-									"status": -1,
-									"message": "获取用户信息失败"
-								});;
-							}
-						}
+				var time = results[0].timestamp;
+				//judge if it is out of date
+				var currentTime = new Date().getTime();
+				if(currentTime - time > 60 * 1000) {
+					//delete code
+					connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
+						if(error)
+							throw error;
+						else
+							console.log("success delete code!!!");
 					});
-					//					res.redirect("/users/usercenter");
-					//					return;
-					//					res.render("usercenter");
-					//					return;
-				} else {
+
 					res.json({
 						"status": -1,
-						"message": "验证码错误"
-					});;
+						"message": "验证码已过期"
+					});
+
+				} else {
+					if(code == req.body.code) {
+						//login
+						//get data from database
+						connection.query(userSQL.getUserByPhone, [req.body.phone], function(_error, _results) {
+							if(_error)
+								throw _error
+							else {
+								if(_results.length != 0) {
+									// session
+									var user = {
+										'phone': req.body.phone,
+										'username': _results[0].name
+									};
+									req.session.user = user;
+
+									//delete code 
+									connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
+										if(error)
+											throw error;
+										else
+											console.log("success delete code!!!");
+									});
+									res.json({
+										"status": 1,
+										"message": "登陆成功",
+										"url": "/users/usercenter"
+									});
+								} else {
+									res.json({
+										"status": -1,
+										"message": "获取用户信息失败"
+									});;
+								}
+							}
+						});
+					} else {
+						res.json({
+							"status": -1,
+							"message": "验证码错误"
+						});;
+					}
 				}
 			} else {
 				res.json({
@@ -193,64 +207,79 @@ router.post('/register', function(req, res) {
 			throw error;
 		} else {
 			console.log(results);
-			//			res.json({
-			//				"status": -1,
-			//				"message": "验证码111错误"
-			//			});
 			if(results.length != 0) {
 				//find it
 				var code = results[0].code;
-				if(code == req.body.code) {
-					//	find in database
-					connection.query(userSQL.getUserByPhone, [req.body.phone], function(error, results) {
-						if(error) {
+				var time = results[0].timestamp;
+				//judge if it is out of date
+				var currentTime = new Date().getTime();
+				if(currentTime - time > 60 * 1000) {
+					//delete code
+					connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
+						if(error)
 							throw error;
-						} else {
-							console.log(results.length);
-							if(results.length != 0) {
-								console.log("this account is register");
-								res.json({
-									"status": -1,
-									"message": "手机号已注册"
-								});
-							} else {
-								// console.log("start register");
-								// 直接返回数据
-								// res.json({"status":1});
-								//add
-								console.log('start reg');
-								connection.query(userSQL.insert, [req.body.phone, req.body.name, req.body.gender, req.body.birthday], function(err, results) {
-									if(error) {
-										throw error;
-									} else {
-										console.log(results);
-										// delete code 
-										connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
-											if(error)
-												throw error;
-											else
-												console.log("success delete code!!!");
-										});
-										var user = {
-											'phone': req.body.phone,
-											'username': req.body.name
-										};
-										req.session.user = user;
-										res.json({
-											"status": 1,
-											"message": "注册成功",
-											"url": "/users/usercenter"
-										});
-									}
-								});
-							}
-						}
+						else
+							console.log("success delete code!!!");
 					});
-				} else {
+
 					res.json({
 						"status": -1,
-						"message": "验证码错误"
-					});;
+						"message": "验证码已过期"
+					});
+
+				} else {
+					if(code == req.body.code) {
+						//	find in database
+						connection.query(userSQL.getUserByPhone, [req.body.phone], function(error, results) {
+							if(error) {
+								throw error;
+							} else {
+								console.log(results.length);
+								if(results.length != 0) {
+									console.log("this account is register");
+									res.json({
+										"status": -1,
+										"message": "手机号已注册"
+									});
+								} else {
+									// console.log("start register");
+									// 直接返回数据
+									// res.json({"status":1});
+									//add
+									console.log('start reg');
+									connection.query(userSQL.insert, [req.body.phone, req.body.name, req.body.gender, req.body.birthday], function(err, results) {
+										if(error) {
+											throw error;
+										} else {
+											console.log(results);
+											// delete code 
+											connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
+												if(error)
+													throw error;
+												else
+													console.log("success delete code!!!");
+											});
+											var user = {
+												'phone': req.body.phone,
+												'username': req.body.name
+											};
+											req.session.user = user;
+											res.json({
+												"status": 1,
+												"message": "注册成功",
+												"url": "/users/usercenter"
+											});
+										}
+									});
+								}
+							}
+						});
+					} else {
+						res.json({
+							"status": -1,
+							"message": "验证码错误"
+						});;
+					}
 				}
 			} else {
 				res.json({
