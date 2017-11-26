@@ -37,6 +37,10 @@
 			}
 		</style>
 		<script type="text/javascript">
+			$(function() {　　
+				// todo 
+			});
+
 			function checkMobile(data) {
 				if(data.phone.length !== 11 || !/^1[3|4|5|7|8][0-9]{9}$/.test(data.phone)) {
 					util.toast('请输入正确的手机号', '', 'error');

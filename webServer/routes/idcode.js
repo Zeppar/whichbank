@@ -5,13 +5,11 @@ var codeSQL = require('../db/Codesql')
 var Alidayu = require('alidayujs');
 var mysql = require('mysql');
 
-//应用密匙 见：http://www.alidayu.com/help?spm=a3142.7802526.1.24.iEB4Yc&_t=1#create 
 var config = {
 	app_key: '24690012',
 	secret: '3cb12066cc52b6ccf13686194a77dcc1'
 };
 var alidayu = new Alidayu(config);
-//参数 见：http://open.taobao.com/doc2/apiDetail.htm?apiId=25450 
 
 var connection = mysql.createConnection({
 	host: '101.200.166.241',
@@ -72,7 +70,7 @@ router.post('/sendCode', function(req, res) {
 									res.json({
 										"status": 1,
 										"message": "获取验证码成功",
-										"count":1
+										"count": 1
 									});
 								}
 							});
@@ -94,8 +92,7 @@ router.post('/sendCode', function(req, res) {
 						}
 					}
 				});
-			}
-			else {
+			} else {
 				console.log(error);
 				res.json({
 					"status": -1,
