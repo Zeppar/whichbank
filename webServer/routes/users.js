@@ -27,65 +27,41 @@ var config = {
 	secret: '3cb12066cc52b6ccf13686194a77dcc1'
 };
 
-var responseJSON = function(res, ret) {
-	if(typeof ret == 'undefined') {
-		res.json({
-			code: '-200',
-			msg: '操作失败'
-		});
-	} else {
-		res.json(ret);
-	}
-}
-//显示所有的用户
-router.get('/showAllUser', function(req, res, next) {
-	connection.query(userSQL.queryAll, function(error, results) {
-		if(error)
-			throw error;
-		else {
-			console.log(results);
-			res.send(JSON.stringify(results));
-		}
-	});
+// get request
+router.get('/', function(req, res, next) {
+	//	res.send('respond with a resource');
+	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/login&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
-//添加用户  get请求
-//router.get('/addUser', function(req, res, next) {
-//	var param = req.query || req.params;
-//	console.log(param.phone);
-//	console.log(param.code);
-//	console.log(param.name);
-//	console.log(param.gender);
-//	console.log(param.birthday);
-//	connection.query(userSQL.insert, [param.phone, param.name, param.gender, param.birthday], function(error, results) {
-//		if(error)
-//			throw error;
-//		else {
-//			console.log(results);
-//			res.send(JSON.stringify(results));
-//		}
-//	});
-//});
+//注册界面
+router.get('/register', function(req, res, next) {
+	res.render('register');
+});
 
-// var data = {
-//		         mobile: $('.js-mobile-val').val(),
-//		         code: $('.vercode').val(),
-//		         name: $('#name').val(),
-//		         gender: $('#gender').val(),
-//		         birthday: $('#birthday').val()
-//		     };
+//登录界面
+router.get('/login', function(req, res, next) {
+	var param = req.query || req.params;
+	console.log('get code : ' + param.code);
+	res.render('login');
+});
 
-//if (data['count'] == 0) {
-//                          //该手机号没有会员卡
-//                          util.confirm('当前手机号未注册，是否选择注册?', '提醒', ['换手机号登录', '注册'], function (e) {
-//                              if (e.index == 0) {
-//                                  $('.js-mobile-val').val('');
-//                              } else {
-//                                  window.location.href = "/app/index.php?c=entry&do=auth/sign-up&i=4&m=fangsuo";
-//                              }
-//                          });
-//                      }
-//判断是否注册
+//登出
+router.get('/logout', function(req, res, next) {
+	req.session.user = null;
+	res.render('login');
+});
+
+router.get("/usercenter", function(req, res) {
+	if(req.session.user != null)
+		res.render("usercenter", {
+			username: req.session.user.username,
+			phone: req.session.user.phone,
+		});
+	else
+		res.render("login");
+});
+// post request
+// 判断是否注册
 router.post("/judgeRegister", function(req, res) {
 	console.log(req.body.phone);
 	connection.query(userSQL.getUserByPhone, [req.body.phone], function(error, results) {
@@ -120,8 +96,10 @@ router.post('/login', function(req, res) {
 				//find it
 				var code = results[0].code;
 				var time = results[0].timestamp;
+				console.log('time : ' + time);
 				//judge if it is out of date
 				var currentTime = new Date().getTime();
+				console.log('current : ' + currentTime);
 				if(currentTime - time > 60 * 1000) {
 					//delete code
 					connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
@@ -188,15 +166,7 @@ router.post('/login', function(req, res) {
 		}
 	});
 });
-router.get("/usercenter", function(req, res) {
-	if(req.session.user != null)
-		res.render("usercenter", {
-			username: req.session.user.username,
-			phone: req.session.user.phone,
-		});
-	else
-		res.render("login");
-});
+
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	console.log(req.body.phone);
@@ -290,45 +260,5 @@ router.post('/register', function(req, res) {
 		}
 	});
 });
-
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-	res.send('respond with a resource');
-});
-
-//注册界面
-router.get('/register', function(req, res, next) {
-	res.render('register');
-});
-
-//登录界面
-router.get('/login', function(req, res, next) {
-	res.render('login');
-});
-
-//登出
-router.get('/logout', function(req, res, next) {
-	req.session.user = null;
-	res.render('login');
-});
-
-router.get('/getUserInfo', function(req, res, next) {
-	var user = new User();
-	var params = URL.parse(req.url, true).query;
-	if(params.id == '1') {
-		user.name = "ligh";
-		user.age = "1";
-		user.city = "北京市";
-	} else {
-		user.name = "SPTING";
-		user.age = "1";
-		user.city = "杭州市";
-	}
-	var response = {
-		status: 1,
-		data: user
-	};
-	res.send(JSON.stringify(response));
-})
 
 module.exports = router;
