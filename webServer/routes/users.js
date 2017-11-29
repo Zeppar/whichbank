@@ -9,6 +9,7 @@ var userSQL = require('../db/Usersql');
 var Alidayu = require('alidayujs');
 var codeSQL = require('../db/Codesql');
 var router = express.Router();
+var request = require('request');
 
 // 使用DBConfig.js的配置信息创建一个MySQL连接池
 // var pool = mysql.createPool( dbConfig.mysql );
@@ -28,7 +29,7 @@ var config = {
 };
 
 // get request
-router.get('/', function(req, res, next) {
+router.get('/grant', function(req, res, next) {
 	//	res.send('respond with a resource');
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/login&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
@@ -41,6 +42,14 @@ router.get('/register', function(req, res, next) {
 //登录界面
 router.get('/login', function(req, res, next) {
 	var param = req.query || req.params;
+	// get access token by code and store it
+	var reqUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=CODE&grant_type=authorization_code';
+	request(reqUrl, function(error, response, body) {
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+			//store access token
+		}
+	});
 	console.log('get code : ' + param.code);
 	res.render('login');
 });
@@ -52,13 +61,38 @@ router.get('/logout', function(req, res, next) {
 });
 
 router.get("/usercenter", function(req, res) {
-	if(req.session.user != null)
-		res.render("usercenter", {
-			username: req.session.user.username,
-			phone: req.session.user.phone,
+	// find openid
+	if(req.session.access != null) {
+		// get current userinfo by token and openid
+		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.access.token + '&openid=' + req.session.access.openid + '&lang=zh_CN';
+		request(reqUrl, function(error, response, body) {
+			if(!error && response.statusCode == 200) {
+				console.log(body);
+				// if token is not out of date
+				// store user info to session and init usercenter page
+				if(req.session.user != null) {
+					res.render("usercenter", {
+						username: req.session.user.username,
+						phone: req.session.user.phone,
+					});
+				} else {
+					res.render('login');
+				}
+			}
 		});
-	else
-		res.render("login");
+	} else {
+		//grant
+		res.redirect('grant');
+	}
+	//		if(req.session.user != null) {
+	//			console.log("jump to usercenter");
+	//			res.render("usercenter", {
+	//				username: req.session.user.username,
+	//				phone: req.session.user.phone,
+	//			});
+	//		}
+	//		else
+	//			res.render("login");
 });
 // post request
 // 判断是否注册
