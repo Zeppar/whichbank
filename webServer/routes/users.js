@@ -49,8 +49,9 @@ router.get('/login', function(req, res, next) {
 		if(!error && response.statusCode == 200) {
 			console.log(body);
 			//store access token
-			req.session.wechatAssess = body;
-			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + body["access_token"] + '&openid=' + body["openid"] + '&lang=zh_CN';
+			var obj = JSON.parse(str);
+			req.session.wechatAssess = obj;
+			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj["access_token"] + '&openid=' + obj["openid"] + '&lang=zh_CN';
 			console.log(reqUserInfoUrl);
 			request(reqUserInfoUrl, function(_error, _response, _body) {
 				if(!_error && response.statusCode == 200) {
