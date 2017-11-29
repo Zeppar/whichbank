@@ -49,14 +49,15 @@ router.get('/login', function(req, res, next) {
 		if(!error && response.statusCode == 200) {
 			console.log(body);
 			//store access token
-			var obj = JSON.parse(str);
+			var obj = JSON.parse(body);
 			req.session.wechatAssess = obj;
-			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj["access_token"] + '&openid=' + obj["openid"] + '&lang=zh_CN';
+			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 			console.log(reqUserInfoUrl);
 			request(reqUserInfoUrl, function(_error, _response, _body) {
 				if(!_error && response.statusCode == 200) {
 					console.log(_body);
-					req.session.wechatUserInfo = body;
+					var user = JSON.parse(_body);
+					req.session.wechatUserInfo = user;
 				}
 			});
 		}
