@@ -96,7 +96,7 @@ router.get("/usercenter", function(req, res) {
 		});
 	} else {
 		//grant
-		req.session.hello = '123';
+		req.session.hello = {number1:'123'};
 		res.redirect('grant');
 	}
 	//		if(req.session.user != null) {
