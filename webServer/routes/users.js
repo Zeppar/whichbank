@@ -216,6 +216,7 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
+	console.log("6666666");
 	console.log(req.session.wechatUserInfo.openid);
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
