@@ -29,13 +29,13 @@ var config = {
 };
 
 // get request
-router.get('/grant', function(req, res) {
+router.get('/grant', function(req, res, next) {
 	//	res.send('respond with a resource');
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
 //注册界面
-router.get('/register', function(req, res) {
+router.get('/register', function(req, res, next) {
 	var param = req.query || req.params;
 	// get access token by code and store it
 	var code = param.code;
@@ -97,6 +97,7 @@ router.get("/usercenter", function(req, res) {
 		});
 	} else {
 		//grant
+		req.session.hi = {sdsd:111}
 		res.redirect('grant');
 	}
 	//		if(req.session.user != null) {
@@ -222,6 +223,7 @@ router.post('/register', function(req, res) {
 	console.log(req.session.wechatAssess);
 	console.log(req.session.wechatUserInfo);
 	console.log(req.session.hello);
+	console.log(req.session.hi);
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
