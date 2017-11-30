@@ -53,11 +53,6 @@ router.get('/register', function(req, res, next) {
 					var user = JSON.parse(_body);
 					// get user info
 					req.session.wechatUserInfo = user;
-					console.log("data");
-					console.log(user);
-					console.log(req.session.wechatUserInfo);
-					console.log(req.session.wechatUserInfo.openid);
-					console.log(req.session.test);
 				}
 			});
 		}
@@ -99,7 +94,6 @@ router.get("/usercenter", function(req, res) {
 		});
 	} else {
 		//grant
-		req.session.test = "123";
 		res.redirect('grant');
 	}
 	//		if(req.session.user != null) {
@@ -222,6 +216,7 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
+	console.log(req.session.wechatUserInfo.openid);
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
