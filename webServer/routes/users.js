@@ -217,7 +217,8 @@ router.post('/login', function(req, res) {
 router.post('/register', function(req, res) {
 	//check if code is right
 	console.log("6666666");
-	console.log(req.session.wechatUserInfo.openid);
+	console.log(req.session);
+	console.log(req.session.wechatUserInfo);
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
