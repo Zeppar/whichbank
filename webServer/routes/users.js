@@ -50,6 +50,9 @@ router.get('/login', function(req, res, next) {
 			console.log(body);
 			//store access token
 			var obj = JSON.parse(body);
+			console.log(obj);
+			console.log(obj["access_token"]);
+			console.log(obj.access_token);
 			req.session.wechatAssess = obj;
 			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 			console.log(reqUserInfoUrl);
