@@ -57,7 +57,6 @@
 							</div>
 						</div>
 
-
 						<p class="mui-text-muted small" style="margin-top: 15px; color: #525252; padding-left: 1px; margin-bottom: 5px">
 							为保障您的权益，请完善以下资料：
 						</p>
@@ -66,6 +65,12 @@
 							<div class="mui-input-row">
 								<label for="name" style="color: #868686">姓名</label>
 								<input class="mui-text-right" id="name" name="name" type="text" placeholder="" style="color: #868686" />
+							</div>
+						</div>
+						<div class="mui-input-group">
+							<div class="mui-input-row">
+								<label for="name" style="color: #868686">身份证号</label>
+								<input class="mui-text-right" id="idnumber" name="idnumber" type="text" placeholder="" style="color: #868686" />
 							</div>
 						</div>
 						<div class="mui-input-group" style="margin-bottom: 5px;">
@@ -105,10 +110,10 @@
 				//普通示例
 				var userPicker = new $.PopPicker();
 				userPicker.setData([{
-					value: '1',
+					value: 1,
 					text: '男'
 				}, {
-					value: '2',
+					value: 2,
 					text: '女'
 				}]);
 				var result = $('#gender')[0],
@@ -130,7 +135,7 @@
 			var result = $('#birthday')[0],
 				bpi = $('#birthday-picker')[0];
 			var picker = new $.DtPicker({
-				type: "month",
+				type: "date",
 				beginYear: "1900"
 			});
 			bpi.addEventListener('tap', function() {
@@ -144,8 +149,9 @@
 					 * rs.h 时，用法同年
 					 * rs.i 分（minutes 的第二个字母），用法同年
 					 */
-					result.value = rs.value + '-01';
-					bpi.value = rs.y.text + '年' + rs.m.text + '月';
+					result.value = rs.value;
+					console.log(result.value);
+					bpi.value = rs.y.text + '年' + rs.m.text + '月' + rs.d.text + '日';
 					/*
 					 * 返回 false 可以阻止选择框的关闭
 					 * return false;
@@ -235,6 +241,11 @@
 				util.toast('请输入姓名', '', 'error');
 				return false;
 			}
+			
+			if(data.idnumber.length != 18) {
+				util.toast('请输入正确的身份证号');
+				return false;
+			}
 
 			if(data.gender.length == 0) {
 				util.toast('请输入性别', '', 'error');
@@ -299,6 +310,7 @@
 				phone: $('.js-mobile-val').val(),
 				code: $('.vercode').val(),
 				name: $('#name').val(),
+				idnumber: $('#idnumber').val(),
 				gender: $('#gender').val(),
 				birthday: $('#birthday').val()
 			};
