@@ -152,7 +152,7 @@ router.post('/login', function(req, res) {
 				//judge if it is out of date
 				var currentTime = new Date().getTime();
 				console.log('current : ' + currentTime);
-				if(currentTime - time > 60 * 1000) {
+				if(currentTime - time > 60 * 1000 * 5) {
 					//delete code
 					connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
 						if(error)
@@ -222,6 +222,7 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
+	console.log('12312312312123 show data');
 	console.log(wechatAssess);
 	console.log(wechatUserInfo);
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
