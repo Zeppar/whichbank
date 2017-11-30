@@ -53,6 +53,10 @@ router.get('/register', function(req, res, next) {
 					var user = JSON.parse(_body);
 					// get user info
 					req.session.wechatUserInfo = user;
+					console.log("data");
+					console.log(user);
+					console.log(req.session.wechatUserInfo);
+					console.log(req.session.wechatUserInfo.openid);
 				}
 			});
 		}
