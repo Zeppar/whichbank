@@ -29,13 +29,13 @@ var config = {
 };
 
 // get request
-router.get('/grant', function(req, res, next) {
+router.get('/grant', function(req, res) {
 	//	res.send('respond with a resource');
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
 //注册界面
-router.get('/register', function(req, res, next) {
+router.get('/register', function(req, res) {
 	var param = req.query || req.params;
 	// get access token by code and store it
 	var code = param.code;
