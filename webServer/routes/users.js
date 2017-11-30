@@ -39,7 +39,7 @@ router.get('/register', function(req, res, next) {
 	var param = req.query || req.params;
 	// get access token by code and store it
 	var code = param.code;
-	var saveFunc = function(var a) {
+	var saveFunc = function(a) {
 		req.session.wechatUserInfo = a;
 	}
 	var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
