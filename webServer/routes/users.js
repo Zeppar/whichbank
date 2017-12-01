@@ -78,7 +78,7 @@ router.get('/login', function(req, res, next) {
 //});
 
 router.get("/usercenter", function(req, res) {
-	// find openid
+	// find openid	
 	console.log('666');
 	if(req.session.wechatAssess != null) {
 		console.log(req.session.wechatAssess);
@@ -95,6 +95,7 @@ router.get("/usercenter", function(req, res) {
 					res.render("usercenter", {
 						username: req.session.user.username,
 						phone: req.session.user.phone,
+						icon: req.session.wechatUserInfo.headimgurl
 					});
 				} else {
 					res.render('login');
