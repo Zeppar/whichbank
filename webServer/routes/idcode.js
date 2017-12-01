@@ -61,6 +61,8 @@ router.post('/sendCode', function(req, res) {
 							console.log('change');
 							var timestamp = new Date().getTime();
 							console.log(timestamp);
+							console.log(code + ',' + timestamp + ',' + req.body.phone);
+							console.log(codeSQL.changeCodeByPhone);
 							connection.query(codeSQL.changeCodeByPhone, [code, timestamp, req.body.phone], function(error, results) {
 								if(error)
 									throw error;
