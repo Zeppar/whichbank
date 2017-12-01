@@ -80,10 +80,12 @@ router.get('/login', function(req, res, next) {
 
 router.get("/usercenter", function(req, res) {
 	// find openid
-	console.log(codeSQL.changeCodeByPhone);
+	console.log(req.session.wechatAssess);
+	console.log(req.session.wechatAssess.access_token);
+	console.log(req.session.wechatAssess.openid);
 	if(req.session.wechatAssess != null) {
 		// get current userinfo by token and openid
-		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
+		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
 		request(reqUrl, function(error, response, body) {
 			if(!error && response.statusCode == 200) {
 				console.log(body);
