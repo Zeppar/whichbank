@@ -4,4 +4,5 @@ var UserSQL = {
 	getUserByPhone:'SELECT * FROM User WHERE phone = ?',
 	getUserByUserId:'SELECT * FROM User WHERE userid = ?'
 };
+
 module.exports = UserSQL;
