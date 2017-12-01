@@ -81,9 +81,9 @@ router.get('/login', function(req, res, next) {
 router.get("/usercenter", function(req, res) {
 	// find openid
 	console.log(codeSQL.changeCodeByPhone);
-	if(req.session.access != null) {
+	if(req.session.wechatAssess != null) {
 		// get current userinfo by token and openid
-		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.access.token + '&openid=' + req.session.access.openid + '&lang=zh_CN';
+		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
 		request(reqUrl, function(error, response, body) {
 			if(!error && response.statusCode == 200) {
 				console.log(body);
@@ -223,9 +223,11 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
-	console.log('12312312312123 show data');
-	console.log(wechatAssess);
-	console.log(wechatUserInfo);
+//	console.log('12312312312123 show data');
+//	console.log(wechatAssess);
+//	console.log(wechatUserInfo);
+	req.session.wechatAssess = wechatAssess;
+	req.session.wechatUserInfo = wechatUserInfo;
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
