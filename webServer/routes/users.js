@@ -80,6 +80,7 @@ router.get('/login', function(req, res, next) {
 
 router.get("/usercenter", function(req, res) {
 	// find openid
+	console.log(codeSQL.changeCodeByPhone);
 	if(req.session.access != null) {
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.access.token + '&openid=' + req.session.access.openid + '&lang=zh_CN';
