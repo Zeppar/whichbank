@@ -34,7 +34,6 @@ router.get('/grant', function(req, res, next) {
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
-
 var wechatAssess = null;
 var wechatUserInfo = null;
 //注册界面
@@ -80,10 +79,11 @@ router.get('/login', function(req, res, next) {
 
 router.get("/usercenter", function(req, res) {
 	// find openid
-	console.log(req.session.wechatAssess);
-	console.log(req.session.wechatAssess.access_token);
-	console.log(req.session.wechatAssess.openid);
+	console.log('666');
 	if(req.session.wechatAssess != null) {
+		console.log(req.session.wechatAssess);
+		console.log(req.session.wechatAssess.access_token);
+		console.log(req.session.wechatAssess.openid);
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
 		request(reqUrl, function(error, response, body) {
@@ -225,9 +225,9 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
-//	console.log('12312312312123 show data');
-//	console.log(wechatAssess);
-//	console.log(wechatUserInfo);
+	//	console.log('12312312312123 show data');
+	//	console.log(wechatAssess);
+	//	console.log(wechatUserInfo);
 	req.session.wechatAssess = wechatAssess;
 	req.session.wechatUserInfo = wechatUserInfo;
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
