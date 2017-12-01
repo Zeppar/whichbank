@@ -253,8 +253,7 @@ router.post('/register', function(req, res) {
 				} else {
 					if(code == req.body.code) {
 						//	find in database
-						console.log(req.session.wechatUserInfo);
-						console.log('66666');
+						Debug.log('sql : ' + userSQL.getUserByUserId);
 						connection.query(userSQL.getUserByUserId, [wechatAssess.openid], function(error, results) {
 							if(error) {
 								throw error;
