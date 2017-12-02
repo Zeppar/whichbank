@@ -12,11 +12,15 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
 		<script type="text/javascript" src="/javascripts/util.js"></script>
-		<script src="/javascripts/JsBarcode.all.js"></script>
+
 		<!--<script src="http://libs.cncdn.cn/jsbarcode/3.5.8/barcodes/JsBarcode.codabar.min.js"></script>-->
 		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/jquery-1.11.1.min.js?v=20160906"></script>
 		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/mui.min.js?v=20160906"></script>
 		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/app/common.js?v=20160906"></script>
+
+		<script src="/javascripts/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="/javascripts/jquery.qrcode.min.js"></script>
+
 		<link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet">
 		<link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet">
 		<link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
@@ -112,6 +116,9 @@
 
 					</div>
 				</div>
+				<div class="panles" style="height: 260px; text-align:center">
+					<div id="erCode" style="margin: 20px;padding: 0;"></div>
+				</div>
 				<!--<div class="mui-text-center" style="margin-top:25px;margin-left: 15px;margin-right: 15px;">
 					<form id="logoutForm" action="/users/logout" method="get">
 						<a class="mui-btn mui-btn-success mui-btn-block log-in" onclick="logout()" style="background-color: #FF4040;border:0;">
@@ -121,27 +128,13 @@
 				</div>-->
 			</div>
 			<script type="text/javascript">
-				//				$(function() {
-				//					options = {
-				//						//										format: "CODE39", //选择要使用的条形码类型
-				//						width: 2.5, //设置条之间的宽度
-				//						height: 60, //高度
-				//						displayValue: false, //是否在条形码下方显示文字
-				//						//										fontOptions: "bold italic", //使文字加粗体或变斜体
-				//						//										font: "fantasy", //设置文本的字体
-				//						//										textAlign: "left", //设置文本的水平对齐方式
-				//						//										textPosition: "top", //设置文本的垂直位置
-				//						//										fontSize: 15, //设置文本的大小
-				//						//										lineColor: "#2196f3", //设置条和文本的颜色。
-				//						//										margin: 15 //设置条形码周围的空白边距
-				//					};
-				//					JsBarcode("#barcode1", "15020078170", options);
-				//
-				//				});
-
-				function logout() {
-					document.getElementById("logoutForm").submit();
-				}
+				$(function() {　　
+					$("#erCode").qrcode({
+						width: 200, //宽度 
+						height: 200, //高度 
+						text: "www.helloweba.com" //任意内容 
+					});
+				});
 			</script>
 	</body>
 
