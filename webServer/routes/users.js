@@ -79,11 +79,11 @@ router.get('/login', function(req, res, next) {
 
 router.get("/usercenter", function(req, res) {
 	// test
-//	res.render("usercenter", {
-//						username: 'req.session.user.username',
-//						phone: 'eq.session.user.phone',
-//						icon: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=808646667,3983686754&fm=58&u_exp_0=241613052,3650381344&fm_exp_0=86&bpow=1024&bpoh=1024'
-//					});
+	//	res.render("usercenter", {
+	//						username: 'req.session.user.username',
+	//						phone: 'eq.session.user.phone',
+	//						icon: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=808646667,3983686754&fm=58&u_exp_0=241613052,3650381344&fm_exp_0=86&bpow=1024&bpoh=1024'
+	//					});
 	if(req.session.wechatAssess != null) {
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
@@ -134,6 +134,10 @@ router.post("/judgeRegister", function(req, res) {
 router.post('/login', function(req, res) {
 	console.log(req.body.phone);
 	console.log(req.body.code);
+
+	req.session.wechatAssess = wechatAssess;
+	req.session.wechatUserInfo = wechatUserInfo;
+
 	//check if code is right
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
@@ -166,7 +170,7 @@ router.post('/login', function(req, res) {
 					if(code == req.body.code) {
 						//login
 						//get data from database
-						connection.query(userSQL.getUserByPhone, [req.body.phone], function(_error, _results) {
+						connection.query(userSQL.getUserByUserId, [wechatAssess.openid], function(_error, _results) {
 							if(_error)
 								throw _error
 							else {
@@ -176,7 +180,7 @@ router.post('/login', function(req, res) {
 									var user = {
 										'phone': req.body.phone,
 										'username': _results[0].name,
-										'idnumber':_results[0].idnumber,
+										'idnumber': _results[0].idnumber,
 										'userid': _results[0].userid
 									};
 									req.session.user = user;
@@ -286,7 +290,7 @@ router.post('/register', function(req, res) {
 											var user = {
 												'phone': req.body.phone,
 												'username': req.body.name,
-												'idnumber':req.body.idnumber,
+												'idnumber': req.body.idnumber,
 												'userid': req.body.userid
 											};
 											req.session.user = user;
