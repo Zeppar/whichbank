@@ -333,21 +333,8 @@ router.post('/register', function(req, res) {
 												if(!error && response.statusCode == 200) {
 													console.log(body);
 													var obj = JSON.parse(body);
-													// store user info to session and init usercenter page
-													if(obj.errcode != undefined /*token is out of date*/ ) {
-														res.redirect('logingrant');
-													} else {
-														// if token is not out of date
-														if(req.session.user != null) {
-															res.render("usercenter", {
-																username: req.session.user.username,
-																phone: req.session.user.phone,
-																icon: req.session.wechatUserInfo.headimgurl
-															});
-														} else {
-															res.render('login');
-														}
-													}
+												} else {
+													console.log('error');
 												}
 											});
 											res.json({
