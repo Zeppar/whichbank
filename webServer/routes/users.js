@@ -328,15 +328,15 @@ router.post('/register', function(req, res) {
 											//save to other server
 //																						http://139.196.124.72:28889/CARD_ADD.aspx?id=卡号&mc=名称
 //											var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
-											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username;
-											request(reqUrl, function(error, response, body) {
-												if(!error && response.statusCode == 200) {
-													console.log(body);
-													var obj = JSON.parse(body);
-												} else {
-													console.log('error');
-												}
-											});
+//											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username;
+//											request(reqUrl, function(error, response, body) {
+//												if(!error && response.statusCode == 200) {
+//													console.log(body);
+//													var obj = JSON.parse(body);
+//												} else {
+//													console.log('error');
+//												}
+//											});
 											res.json({
 												"status": 1,
 												"message": "注册成功",
