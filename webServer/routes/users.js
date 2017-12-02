@@ -105,11 +105,11 @@ router.get('/login', function(req, res, next) {
 
 router.get("/usercenter", function(req, res) {
 	// test
-	//	res.render("usercenter", {
-	//						username: 'req.session.user.username',
-	//						phone: 'eq.session.user.phone',
-	//						icon: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=808646667,3983686754&fm=58&u_exp_0=241613052,3650381344&fm_exp_0=86&bpow=1024&bpoh=1024'
-	//					});
+		res.render("usercenter", {
+//							username: 'req.session.user.username',
+//							phone: 'eq.session.user.phone',
+//							icon: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=808646667,3983686754&fm=58&u_exp_0=241613052,3650381344&fm_exp_0=86&bpow=1024&bpoh=1024'
+//						});
 	if(req.session.wechatAssess != null) {
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
