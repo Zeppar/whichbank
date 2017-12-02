@@ -79,12 +79,6 @@ router.get('/login', function(req, res, next) {
 
 router.get("/usercenter", function(req, res) {
 	// find openid	
-	console.log('666');
-	res.render("usercenter", {
-						username: 'req.session.user.username',
-						phone: 'req.session.user.phone',
-						icon: 'req.session.wechatUserInfo.headimgurl'
-					});
 	if(req.session.wechatAssess != null) {
 		console.log(req.session.wechatAssess);
 		console.log(req.session.wechatAssess.access_token);
