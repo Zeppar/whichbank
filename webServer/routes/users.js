@@ -78,11 +78,13 @@ router.get('/login', function(req, res, next) {
 //});
 
 router.get("/usercenter", function(req, res) {
-	// find openid	
+	// test
+//	res.render("usercenter", {
+//						username: 'req.session.user.username',
+//						phone: 'eq.session.user.phone',
+//						icon: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=808646667,3983686754&fm=58&u_exp_0=241613052,3650381344&fm_exp_0=86&bpow=1024&bpoh=1024'
+//					});
 	if(req.session.wechatAssess != null) {
-		console.log(req.session.wechatAssess);
-		console.log(req.session.wechatAssess.access_token);
-		console.log(req.session.wechatAssess.openid);
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
 		request(reqUrl, function(error, response, body) {
@@ -105,15 +107,6 @@ router.get("/usercenter", function(req, res) {
 		//grant
 		res.redirect('grant');
 	}
-	//		if(req.session.user != null) {
-	//			console.log("jump to usercenter");
-	//			res.render("usercenter", {
-	//				username: req.session.user.username,
-	//				phone: req.session.user.phone,
-	//			});
-	//		}
-	//		else
-	//			res.render("login");
 });
 // post request
 // 判断是否注册
@@ -181,7 +174,9 @@ router.post('/login', function(req, res) {
 									// session
 									var user = {
 										'phone': req.body.phone,
-										'username': _results[0].name
+										'username': _results[0].name,
+										'idnumber':_result[0].idnumber,
+										'userid': _results[0].userid
 									};
 									req.session.user = user;
 

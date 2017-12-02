@@ -9,6 +9,7 @@ var ejs = require('ejs');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var idcode = require('./routes/idcode');
+var qrcode = require('./routes/qrcode');
 
 TopClient = require('./topClient').TopClient;
 //
@@ -60,18 +61,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 app.use('/idcode', idcode);
+app.use('/qrcode', qrcode);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-	if(!req.session.user) {
-		if(req.url == "/login") {
-			next(); //如果请求的地址是登录则通过，进行下一个请求  
-		} else {
-			res.redirect('/login');
-		}
-	} else if(req.session.user) {
-		next();
-	};
+//	if(!req.session.user) {
+//		if(req.url == "/login") {
+//			next(); //如果请求的地址是登录则通过，进行下一个请求  
+//		} else {
+//			res.redirect('/login');
+//		}
+//	} else if(req.session.user) {
+//		next();
+//	};
+	next();
 	//	var err = new Error('Not Found');
 	//	err.status = 404;
 	//	next(err);
