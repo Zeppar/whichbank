@@ -176,7 +176,7 @@ router.post('/login', function(req, res) {
 									var user = {
 										'phone': req.body.phone,
 										'username': _results[0].name,
-										'idnumber':_result[0].idnumber,
+										'idnumber':_results[0].idnumber,
 										'userid': _results[0].userid
 									};
 									req.session.user = user;
