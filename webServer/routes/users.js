@@ -29,7 +29,12 @@ var config = {
 };
 
 // get request
-router.get('/grant', function(req, res, next) {
+router.get('/logingrant', function(req, res, next) {
+	//	res.send('respond with a resource');
+	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/login&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
+});
+
+router.get('/registergrant', function(req, res, next) {
 	//	res.send('respond with a resource');
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
@@ -41,9 +46,6 @@ router.get('/register', function(req, res, next) {
 	var param = req.query || req.params;
 	// get access token by code and store it
 	var code = param.code;
-	var saveFunc = function(a) {
-		req.session.wechatUserInfo = a;
-	}
 	var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
 	request(reqAccessUrl, function(error, response, body) {
 		if(!error && response.statusCode == 200) {
@@ -62,13 +64,37 @@ router.get('/register', function(req, res, next) {
 			});
 		}
 	});
-	console.log('get code : ' + param.code);
 	res.render('register');
 });
 
 //登录界面
 router.get('/login', function(req, res, next) {
-	res.render('login');
+	var param = req.query || req.params;
+	// get access token by code and store it
+	var code = param.code;
+	if(code != undefined) {
+		var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
+		request(reqAccessUrl, function(error, response, body) {
+			if(!error && response.statusCode == 200) {
+				console.log(body);
+				//store access token
+				var obj = JSON.parse(body);
+				wechatAssess = obj;
+				var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
+				request(reqUserInfoUrl, function(_error, _response, _body) {
+					if(!_error && response.statusCode == 200) {
+						console.log(_body);
+						var user = JSON.parse(_body);
+						// get user info
+						wechatUserInfo = user;
+					}
+				});
+			}
+		});
+		res.render('login');
+	} else {
+		res.render('login');
+	}
 });
 
 //登出
@@ -90,22 +116,27 @@ router.get("/usercenter", function(req, res) {
 		request(reqUrl, function(error, response, body) {
 			if(!error && response.statusCode == 200) {
 				console.log(body);
-				// if token is not out of date
+				var obj = JSON.parse(body);
 				// store user info to session and init usercenter page
-				if(req.session.user != null) {
-					res.render("usercenter", {
-						username: req.session.user.username,
-						phone: req.session.user.phone,
-						icon: req.session.wechatUserInfo.headimgurl
-					});
+				if(obj.error != undefined /*token is out of date*/ ) {
+					res.redirect('logingrant');
 				} else {
-					res.render('login');
+					// if token is not out of date
+					if(req.session.user != null) {
+						res.render("usercenter", {
+							username: req.session.user.username,
+							phone: req.session.user.phone,
+							icon: req.session.wechatUserInfo.headimgurl
+						});
+					} else {
+						res.render('login');
+					}
 				}
 			}
 		});
 	} else {
 		//grant
-		res.redirect('grant');
+		res.redirect('registergrant');
 	}
 });
 // post request
