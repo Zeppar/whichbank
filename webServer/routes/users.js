@@ -183,7 +183,7 @@ router.post('/login', function(req, res) {
 				//judge if it is out of date
 				var currentTime = new Date().getTime();
 				console.log('current : ' + currentTime);
-				if(currentTime - time == 60 * 1000 * 5) {
+				if(currentTime - time > 60 * 1000 * 5) {
 					//delete code
 					connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
 						if(error)
@@ -272,7 +272,7 @@ router.post('/register', function(req, res) {
 				var time = results[0].timestamp;
 				//judge if it is out of date
 				var currentTime = new Date().getTime();
-				if(currentTime - time == 60 * 1000 * 5) {
+				if(currentTime - time > 60 * 1000 * 5) {
 					//delete code
 					connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
 						if(error)
@@ -325,6 +325,31 @@ router.post('/register', function(req, res) {
 												'userid': req.body.userid
 											};
 											req.session.user = user;
+											//save to other server
+//																						http://139.196.124.72:28889/CARD_ADD.aspx?id=卡号&mc=名称
+//											var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
+											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username;
+											request(reqUrl, function(error, response, body) {
+												if(!error && response.statusCode == 200) {
+													console.log(body);
+													var obj = JSON.parse(body);
+													// store user info to session and init usercenter page
+													if(obj.errcode != undefined /*token is out of date*/ ) {
+														res.redirect('logingrant');
+													} else {
+														// if token is not out of date
+														if(req.session.user != null) {
+															res.render("usercenter", {
+																username: req.session.user.username,
+																phone: req.session.user.phone,
+																icon: req.session.wechatUserInfo.headimgurl
+															});
+														} else {
+															res.render('login');
+														}
+													}
+												}
+											});
 											res.json({
 												"status": 1,
 												"message": "注册成功",
