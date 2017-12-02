@@ -105,7 +105,7 @@ router.get('/login', function(req, res, next) {
 
 router.get("/usercenter", function(req, res) {
 	// test
-		res.render("usercenter", {
+//		res.render("usercenter", {
 //							username: 'req.session.user.username',
 //							phone: 'eq.session.user.phone',
 //							icon: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=808646667,3983686754&fm=58&u_exp_0=241613052,3650381344&fm_exp_0=86&bpow=1024&bpoh=1024'
