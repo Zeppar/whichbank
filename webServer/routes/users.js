@@ -118,7 +118,7 @@ router.get("/usercenter", function(req, res) {
 				console.log(body);
 				var obj = JSON.parse(body);
 				// store user info to session and init usercenter page
-				if(obj.error != undefined /*token is out of date*/ ) {
+				if(obj.errcode != undefined /*token is out of date*/ ) {
 					res.redirect('logingrant');
 				} else {
 					// if token is not out of date
