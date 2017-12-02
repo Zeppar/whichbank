@@ -172,6 +172,7 @@ router.post('/login', function(req, res) {
 							else {
 								if(_results.length != 0) {
 									// session
+									console.log(_results);
 									var user = {
 										'phone': req.body.phone,
 										'username': _results[0].name,
@@ -284,7 +285,9 @@ router.post('/register', function(req, res) {
 											});
 											var user = {
 												'phone': req.body.phone,
-												'username': req.body.name
+												'username': req.body.name,
+												'idnumber':req.body.idnumber,
+												'userid': req.body.userid
 											};
 											req.session.user = user;
 											res.json({
