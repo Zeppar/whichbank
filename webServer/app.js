@@ -10,31 +10,9 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var idcode = require('./routes/idcode');
 var qrcode = require('./routes/qrcode');
+var request = require('request');
 
 TopClient = require('./topClient').TopClient;
-//
-//var client = new TopClient({
-//                          'appkey':'24690012',
-//                          'appsecret':'3cb12066cc52b6ccf13686194a77dcc1',
-//                          'REST_URL':'http://gw.api.taobao.com/router/rest'});
-//
-//client.execute('alibaba.aliqin.fc.sms.num.send',
-//            {
-//                'fields':'nick,type,sex,location',
-//                'nick':'sandbox_c_1',
-//                'extend' : '' ,
-//               'sms_type' : 'normal' ,
-//               'sms_free_sign_name' : '身份验证' ,
-//               'sms_param' : "{code:'123456',product:'微尺伴客'}" ,
-//               'rec_num' : '18765321992' ,
-//               'sms_template_code' : "SMS_13256683"
-//            },
-//            function (error,response) {
-//                if(!error)
-//                  console.log(response);
-//                else
-//                  console.log(error);
-//            })
 
 var app = express();
 // view engine setup
@@ -72,7 +50,11 @@ app.use(function(req, res, next) {
 			res.redirect('/login');
 		}
 	} else if(req.session.user) {
-		next();
+		if(req.session.user.acstatus != 0) {
+			next();
+		} else {
+			res.redirect('/active');
+		}
 	};
 	//	var err = new Error('Not Found');
 	//	err.status = 404;

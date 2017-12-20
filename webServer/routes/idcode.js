@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var dbConfig = require('../db/DBConfig');
 var codeSQL = require('../db/Codesql')
 var Alidayu = require('alidayujs');
 var mysql = require('mysql');
