@@ -2,17 +2,13 @@ var express = require('express');
 var session = require('express-session');
 
 var URL = require('url');
-var User = require('./user');
 var mysql = require('mysql');
-var dbConfig = require('../db/DBConfig');
-var userSQL = require('../db/Usersql');
 var Alidayu = require('alidayujs');
+var userSQL = require('../db/Usersql');
 var codeSQL = require('../db/Codesql');
+var activeSQL = require('../db/Activesql');
 var router = express.Router();
 var request = require('request');
-
-// 使用DBConfig.js的配置信息创建一个MySQL连接池
-// var pool = mysql.createPool( dbConfig.mysql );
 
 var connection = mysql.createConnection({
 	host: '101.200.166.241',
@@ -97,6 +93,10 @@ router.get('/login', function(req, res, next) {
 	}
 });
 
+router.get('/active', function(req, res, next) {
+	res.render('active');
+});
+
 //登出
 //router.get('/logout', function(req, res, next) {
 //	req.session.user = null;
@@ -104,12 +104,6 @@ router.get('/login', function(req, res, next) {
 //});
 
 router.get("/usercenter", function(req, res) {
-	// test
-	//		res.render("usercenter", {
-	//							username: 'req.session.user.username',
-	//							phone: 'eq.session.user.phone',
-	//							icon: 'https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=808646667,3983686754&fm=58&u_exp_0=241613052,3650381344&fm_exp_0=86&bpow=1024&bpoh=1024'
-	//						});
 	if(req.session.wechatAssess != null) {
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
@@ -163,8 +157,8 @@ router.post("/judgeRegister", function(req, res) {
 })
 //登录
 router.post('/login', function(req, res) {
-	console.log(req.body.phone);
-	console.log(req.body.code);
+	//	console.log(req.body.phone);
+	//	console.log(req.body.code);
 
 	req.session.wechatAssess = wechatAssess;
 	req.session.wechatUserInfo = wechatUserInfo;
@@ -207,12 +201,12 @@ router.post('/login', function(req, res) {
 							else {
 								if(_results.length != 0) {
 									// session
-									console.log(_results);
 									var user = {
 										'phone': req.body.phone,
 										'username': _results[0].name,
 										'idnumber': _results[0].idnumber,
-										'userid': _results[0].userid
+										'userid': _results[0].userid,
+										'acstatus': _results[0].acstatus
 									};
 									req.session.user = user;
 
@@ -223,11 +217,19 @@ router.post('/login', function(req, res) {
 										else
 											console.log("success delete code!!!");
 									});
-									res.json({
-										"status": 1,
-										"message": "登陆成功",
-										"url": "/users/usercenter"
-									});
+									if(user.acstatus != 0) {
+										res.json({
+											"status": 1,
+											"message": "登陆成功",
+											"url": "/users/usercenter"
+										});
+									} else {
+										res.json({
+											"status": 1,
+											"message": "登陆成功",
+											"url": "/users/active"
+										});
+									}
 								} else {
 									res.json({
 										"status": -1,
@@ -256,9 +258,6 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
-	//	console.log('12312312312123 show data');
-	//	console.log(wechatAssess);
-	//	console.log(wechatUserInfo);
 	req.session.wechatAssess = wechatAssess;
 	req.session.wechatUserInfo = wechatUserInfo;
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
@@ -322,43 +321,37 @@ router.post('/register', function(req, res) {
 												'phone': req.body.phone,
 												'username': req.body.name,
 												'idnumber': req.body.idnumber,
-												'userid': req.body.userid
+												'userid': req.body.userid,
+												'acstatus': 0
+
 											};
 											req.session.user = user;
 											//save to other server
-											//																						http://139.196.124.72:28889/CARD_ADD.aspx?id=卡号&mc=名称
-											//											var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
-											//											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone;
-											//											request(reqUrl, function(error, response, body) {
-											//												if(!error && response.statusCode == 200) {
-											//													console.log(body);
-											//													//													var obj = JSON.parse(body);
-											//													if(body.indexOf('"Y') != -1) {
-											//														console.log("失败");
-											//														res.json({
-											//															"status": -1,
-											//															"message": "注册失败"
-											//														});
-											//													} else {
-											//														console.log("成功");
-											//														res.json({
-											//															"status": 1,
-											//															"message": "注册成功",
-											//															"url": "/users/usercenter"
-											//														});
-											//													}
-											//												} else {
-											//													console.log('error');
-											//													res.json({
-											//														"status": -1,
-											//														"message": "注册失败"
-											//													});
-											//												}
-											//											});
-											res.json({
-												"status": 1,
-												"message": "注册成功",
-												"url": "/users/usercenter"
+											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone;
+											request(reqUrl, function(error, response, body) {
+												if(!error && response.statusCode == 200) {
+													console.log(body);
+													if(body.startsWith('Y')) {
+														console.log("成功");
+														res.json({
+															"status": 1,
+															"message": "注册成功",
+															"url": "/users/active"
+														});
+													} else {
+														console.log("失败");
+														res.json({
+															"status": -1,
+															"message": "注册失败"
+														});
+													}
+												} else {
+													console.log('error');
+													res.json({
+														"status": -1,
+														"message": "注册失败"
+													});
+												}
 											});
 										}
 									});
@@ -377,6 +370,50 @@ router.post('/register', function(req, res) {
 					"status": -1,
 					"message": "验证码错误"
 				});;
+			}
+		}
+	});
+});
+
+// 用户激活
+router.post('/active', function(req, res) {
+	if(!req.session.user) {
+		res.json({
+			"status": 0,
+			"message": "请先进行注册或登录操作"
+		});
+	}
+	// judge code exist
+	connection.query(codeSQL.getCode, [req.body.code], function(error, results) {
+		if(error) {
+			throw error;
+		} else {
+			if(results.length != 0) {
+				// find code
+				// 0 inact 1 sale 2 wechat
+				connection.query(codeSQL.activeUserByUserid, [1, req.session.user.userid], function(error, results) {
+					if(error) {
+						throw error;
+					} else {
+						// delete active code
+						connection.query(activeSQL.deleteCode, [req.body.code], function(error, results) {
+							if(error) {
+								throw error;
+							} else {
+								console.log("delete active code successfully!");
+							}
+						});
+						res.json({
+							"status": 1,
+							"message": "激活成功"
+						});
+					}
+				});
+			} else {
+				res.json({
+					"status": 0,
+					"message": "激活码错误"
+				});
 			}
 		}
 	});
