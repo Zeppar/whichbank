@@ -117,7 +117,7 @@ router.get("/usercenter", function(req, res) {
 				} else {
 					// if token is not out of date
 					if(req.session.user != null) {
-						if(res.session.acstatus != 0) {
+						if(res.session.user.acstatus != 0) {
 							res.render("usercenter", {
 								username: req.session.user.username,
 								phone: req.session.user.phone,
