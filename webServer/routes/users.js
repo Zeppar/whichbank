@@ -310,7 +310,7 @@ router.post('/register', function(req, res) {
 									// res.json({"status":1});
 									//add
 									console.log('start reg');
-									connection.query(userSQL.insert, [wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday], function(err, results) {
+									connection.query(userSQL.insert, [wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0], function(err, results) {
 										if(error) {
 											throw error;
 										} else {
