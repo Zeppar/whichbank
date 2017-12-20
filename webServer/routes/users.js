@@ -117,11 +117,15 @@ router.get("/usercenter", function(req, res) {
 				} else {
 					// if token is not out of date
 					if(req.session.user != null) {
-						res.render("usercenter", {
-							username: req.session.user.username,
-							phone: req.session.user.phone,
-							icon: req.session.wechatUserInfo.headimgurl
-						});
+						if(res.session.acstatus != 0) {
+							res.render("usercenter", {
+								username: req.session.user.username,
+								phone: req.session.user.phone,
+								icon: req.session.wechatUserInfo.headimgurl
+							});
+						} else {
+							res.render("active");
+						}
 					} else {
 						res.render('login');
 					}
