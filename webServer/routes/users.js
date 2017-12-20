@@ -215,9 +215,9 @@ router.post('/login', function(req, res) {
 										if(error)
 											throw error;
 										else
-											console.log("success delete code!!!");
+											console.log("success delete code!!!!!!!");
 									});
-									console.log(user);
+									console.log(_results[0].acstatus);
 									if(user.acstatus != 0) {
 										res.json({
 											"status": 1,
