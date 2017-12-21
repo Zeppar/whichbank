@@ -97,6 +97,17 @@ router.get('/active', function(req, res, next) {
 	res.render('active');
 });
 
+router.get('/adminCenter', function(req, res, next) {
+	if(req.session.manager != undefined && req.session.manager != null)
+		res.render('mgrCenter');
+	else
+		res.render('mgrLogin');
+});
+
+router.get('/adminLogin', function(req, res, next) {
+	res.render('mgrLogin');
+});
+
 //登出
 //router.get('/logout', function(req, res, next) {
 //	req.session.user = null;
@@ -104,7 +115,7 @@ router.get('/active', function(req, res, next) {
 //});
 
 router.get("/usercenter", function(req, res) {
-	if(req.session.wechatAssess != null) {
+	if(req.session.wechatAssess != null && req.session.wechatAssess != undefined) {
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
 		request(reqUrl, function(error, response, body) {
@@ -116,7 +127,7 @@ router.get("/usercenter", function(req, res) {
 					res.redirect('logingrant');
 				} else {
 					// if token is not out of date
-					if(req.session.user != null) {
+					if(req.session.user != null && req.session.user != undefined) {
 						if(req.session.user.acstatus != 0) {
 							res.render("usercenter", {
 								username: req.session.user.username,
@@ -389,35 +400,77 @@ router.post('/active', function(req, res) {
 		});
 	}
 	// judge code exist
-	connection.query(codeSQL.getCode, [req.body.code], function(error, results) {
+	connection.query(activeSQL.getCode, [req.body.code], function(error, results) {
 		if(error) {
 			throw error;
 		} else {
 			if(results.length != 0) {
 				// find code
-				// 0 inact 1 sale 2 wechat
-				connection.query(codeSQL.activeUserByUserid, [1, req.session.user.userid], function(error, results) {
-					if(error) {
-						throw error;
-					} else {
-						// delete active code
-						connection.query(activeSQL.deleteCode, [req.body.code], function(error, results) {
-							if(error) {
-								throw error;
-							} else {
-								console.log("delete active code successfully!");
-							}
-						});
-						res.json({
-							"status": 1,
-							"message": "激活成功"
-						});
-					}
-				});
+				if(results[0].status == 0) {
+					// 0 inact 1 sale 2 wechat
+					connection.query(codeSQL.activeUserByUserid, [1, req.session.user.userid], function(error, results) {
+						if(error) {
+							throw error;
+						} else {
+							// delete active code
+							connection.query(activeSQL.changeCodeStatus, [req.body.code], function(error, results) {
+								if(error) {
+									throw error;
+								} else {
+									console.log("change active code status successfully!");
+								}
+							});
+							res.json({
+								"status": 1,
+								"message": "激活成功",
+								"url": "/users/usercenter"
+							});
+						}
+					});
+				} else {
+					res.json({
+						"status": 0,
+						"message": "激活码已经被使用"
+					});
+				}
 			} else {
 				res.json({
 					"status": 0,
 					"message": "激活码错误"
+				});
+			}
+		}
+	});
+});
+
+router.post('/adminLogin', function(req, res) {
+	console.log(req.body.username);
+	connection.query(userSQL.getManagerByUsername, [req.body.username], function(error, results) {
+		console.log("start");
+		if(error) {
+			throw error;
+		} else {
+			console.log(results);
+			if(results.length != 0) {
+				if(results[0].password == req.body.password) {
+					req.session.manager = {
+						'username': req.body.username
+					};
+					res.json({
+						"status": 1,
+						"message": "登录成功",
+						"url": "/users/adminCenter"
+					});
+				} else {
+					res.json({
+						"status": 0,
+						"message": "密码错误"
+					});
+				}
+			} else {
+				res.json({
+					"status": 0,
+					"message": "管理员不存在"
 				});
 			}
 		}

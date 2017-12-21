@@ -42,7 +42,7 @@
 			});
 
 			function checkMobile(data) {
-				if(data.phone.length !== 11 || !/^1[3|4|5|7|8][0-9]{9}$/.test(data.phone)) {
+				if(data.phone.trim().length !== 11 || !/^1[3|4|5|7|8][0-9]{9}$/.test(data.phone)) {
 					util.toast('请输入正确的手机号', '', 'error');
 					return false;
 				}
@@ -54,7 +54,7 @@
 					return false;
 				}
 
-				if(data.code.length !== 6) {
+				if(data.code.trim().length !== 6) {
 					util.toast('请输入正确的验证码', '', 'error');
 					return false;
 				}

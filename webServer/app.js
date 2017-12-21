@@ -10,6 +10,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var idcode = require('./routes/idcode');
 var qrcode = require('./routes/qrcode');
+var accode = require('./routes/accode');
 var request = require('request');
 
 TopClient = require('./topClient').TopClient;
@@ -40,25 +41,28 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/idcode', idcode);
 app.use('/qrcode', qrcode);
+app.use('/accode', accode);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-	if(!req.session.user) {
-		if(req.url == "/login") {
-			next(); //如果请求的地址是登录则通过，进行下一个请求  
-		} else {
-			res.redirect('/login');
-		}
-	} else if(req.session.user) {
-		if(req.session.user.acstatus != 0) {
-			next();
-		} else {
-			res.redirect('/active');
-		}
-	};
-	//	var err = new Error('Not Found');
-	//	err.status = 404;
-	//	next(err);
+//	res.redirect('/active');
+//	if(!req.session.user) {
+//		if(req.url == "/login") {
+//			next(); //如果请求的地址是登录则通过，进行下一个请求  
+//		} else {
+//			res.redirect('/login');
+//		}
+//	} else if(req.session.user) {
+//		if(req.session.user.acstatus != 0) {
+//			next();
+//		} else {
+//			res.redirect('/active');
+//		}
+//	};
+		var err = new Error('Not Found');
+		err.status = 404;
+		next(err);
 });
 
 // error handler
@@ -72,24 +76,5 @@ app.use(function(err, req, res, next) {
 	res.render('error');
 });
 app.disable('etag');
-
-// var mysql = require('mysql');
-// var connection = mysql.createConnection({
-// 			host: 'localhost',
-// 			user: 'root',
-// 			password: '123',
-// 			database: 'ExpressDB',
-// 			port: 3306
-// 		});
-
-// connection.connect();
-
-// connection.query('SELECT * FROM User', function (error, results) {
-//   if (error) 
-//   	throw error;
-//   else {
-//    console.log(results);
-// 	}
-// });
 
 module.exports = app;

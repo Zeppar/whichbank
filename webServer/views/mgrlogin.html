@@ -41,23 +41,18 @@
 				// todo 
 			});
 
-			function confirmActive() {
-				
-			}
+			function checkInfo(data) {
 
-			function active(data) {
-				var activeDt = {
-					url: "/users/active",
-					data: data,
-					successCallback: function(data) {
-						//do nothing
-						util.toast(data['message'], '');
-						setTimeout(function() {
-							window.location.href = data.url;
-						}, 1000);
-					}
+				if(data.username.trim().length == 0) {
+					util.toast('请输入正确的用户名', '', 'error');
+					return false;
 				}
-				sendRequest(loginDt);
+				if(data.password.trim().length == 0) {
+					util.toast('请输入正确的密码', '', 'error');
+					return false;
+				}
+
+				return true
 			}
 
 			function sendRequest(request) {
@@ -74,6 +69,8 @@
 						if(res['status'] != 1) {
 							return util.toast(res['message'], '', 'error');
 						} else {
+							//								return util.toast(res['message'], '');
+							//							不用提示
 							request.successCallback(res);
 						}
 					},
@@ -89,6 +86,32 @@
 					}
 				});
 			}
+
+			function confirmLogin() {
+				var data = {
+					username: $('#username').val(),
+					password: $('#password').val()
+				};
+				console.log(data);
+				if(checkInfo(data)) {
+					login(data)
+				}
+			}
+
+			function login(data) {
+				var loginDt = {
+					url: "/users/adminLogin",
+					data: data,
+					successCallback: function(data) {
+						//do nothing
+						util.toast('登陆成功', '');
+						setTimeout(function() {
+							window.location.href = data.url;
+						}, 1000);
+					}
+				}
+				sendRequest(loginDt);
+			}
 		</script>
 	</head>
 
@@ -96,7 +119,7 @@
 		<div class="container container-fill">
 			<div class="mui-content mc-login">
 				<div class="avatar mui-text-center">
-					<h1 class="fs_login_h1" style="color:#FF4040">会员激活<br>
+					<h1 class="fs_login_h1" style="color:#FF4040">管理员登录<br>
             <small style="color:#FF6347">Log&nbsp; in</small>
         </h1>
 				</div>
@@ -104,38 +127,22 @@
 					<div class="js-sendcode">
 						<div class="mui-input-group mui-mt15">
 							<div class="mui-input-row">
-								<input name="mobile" id="activecode" class=" en" type="text" placeholder="请输入激活码" />
+								<input name="username" id="username" class="en" type="text" placeholder="请输入用户名" />
+							</div>
+						</div>
+						<div class="mui-input-row" style="margin">
+							<div class="mui-input-row">
+								<input name="password" id="password" class="en" type="text" placeholder="请输入密码" />
 							</div>
 						</div>
 
 						<div class="mui-text-center" style="margin-top:25px ">
-							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmActive()" style="background-color: #FF4040;border:0;">
-                    激活
+							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmLogin()" style="background-color: #FF4040;border:0;">
+                    登录
                 </button>
 						</div>
 					</div>
 				</div>
-
-				<!--<div class="mui-active mc-login-code" id="login-code">
-					<div class="js-sendcode">
-						<div class="mui-input-group mui-mt15">
-							<div class="mui-input-row">
-								<div id="pay198" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="background: white;height: 100%;text-align: center;border-style: solid;border-width: 1px;border-color: red;" onclick="clickPay(this.id)">
-									<span style="line-height: 44px;color: black;">198</span>
-								</div>
-								<div id="pay298" class="col-lg-6 col-md-6 col-sm-6 col-xs-6" style="background: white;height: 100%;text-align: center;border-style: solid;border-width: 0px;border-color: red;" onclick="clickPay(this.id)">
-									<span style="line-height: 44px;color: black;">298</span>
-								</div>
-							</div>
-						</div>
-
-						<div class="mui-text-center" style="margin-top:25px ">
-							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmBuy()" style="background-color: #FF4040;border:0;">
-                    购买
-                </button>
-						</div>
-					</div>
-				</div>-->
 			</div>
 		</div>
 	</body>
