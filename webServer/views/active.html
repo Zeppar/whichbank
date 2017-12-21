@@ -42,10 +42,13 @@
 			});
 
 			function confirmActive() {
+				alert("6666");
 				var data = {
 					code: $('#activecode').val();
 				};
+				alert($('#activecode').val());
 				if(data.code.trim().length != 0) {
+					alert("888");
 					active(data);
 				}
 			}
