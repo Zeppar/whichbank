@@ -1,5 +1,5 @@
 var ActiveSQL = {	
-	changeCodeStatus: 'UPDATE ACCode SET status=? where code=?',
+	changeCodeStatus: 'UPDATE ACCode SET status=1 where code=?',
 	getCode:'SELECT * FROM ACCode WHERE code = ?',
 	createCode:'INSERT INTO ACCode (code, status) VALUES (?,?)',
 	getAllCode: 'SELECT * FROM ACCode'
