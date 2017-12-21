@@ -43,7 +43,7 @@
 
 			function confirmActive() {
 				var data = {
-					code: $('#activecode').val();
+					code: $('#activecode').val()
 				};
 				if(data.code.trim().length != 0) {
 					active(data);
@@ -62,7 +62,7 @@
 						}, 1000);
 					}
 				}
-				sendRequest(loginDt);
+				sendRequest(activeDt);
 			}
 
 			function sendRequest(request) {
@@ -114,9 +114,7 @@
 						</div>
 
 						<div class="mui-text-center" style="margin-top:25px ">
-							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmActive()" style="background-color: #FF4040;border:0;">
-                    激活
-                </button>
+							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmActive()" style="background-color: #FF4040;border:0;">激活</button>
 						</div>
 					</div>
 				</div>
