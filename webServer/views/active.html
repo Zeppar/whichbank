@@ -42,7 +42,12 @@
 			});
 
 			function confirmActive() {
-				
+				var data = {
+					code: $('#activecode').val();
+				};
+				if(data.code.trim().length != 0) {
+					active(data);
+				}
 			}
 
 			function active(data) {
@@ -104,7 +109,7 @@
 					<div class="js-sendcode">
 						<div class="mui-input-group mui-mt15">
 							<div class="mui-input-row">
-								<input name="mobile" id="activecode" class=" en" type="text" placeholder="请输入激活码" />
+								<input name="activecode" id="activecode" class=" en" type="text" placeholder="请输入激活码" />
 							</div>
 						</div>
 
