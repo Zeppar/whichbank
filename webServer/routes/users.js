@@ -408,7 +408,7 @@ router.post('/active', function(req, res) {
 				// find code
 				if(results[0].status == 0) {
 					// 0 inact 1 sale 2 wechat
-					connection.query(codeSQL.activeUserByUserid, [1, req.session.user.userid], function(error, results) {
+					connection.query(userSQL.activeUserByUserid, [1, req.session.user.userid], function(error, results) {
 						if(error) {
 							throw error;
 						} else {
