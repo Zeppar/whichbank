@@ -233,16 +233,16 @@
 				return false;
 			}
 
-			if(data.code.length !== 6) {
+			if(data.code.trim().length !== 6) {
 				util.toast('请输入正确的验证码', '', 'error');
 				return false;
 			}
-			if(data.name.length == 0) {
+			if(data.name.trim().length == 0) {
 				util.toast('请输入姓名', '', 'error');
 				return false;
 			}
 
-			if(data.idnumber.length != 18) {
+			if(data.idnumber.trim().length != 18) {
 				util.toast('请输入正确的身份证号', '', 'error');
 				return false;
 			}
