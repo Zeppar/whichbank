@@ -49,7 +49,7 @@ router.post('/create', function(req, res) {
 		if(error) {
 			throw error;
 		} else {
-			var accode = createACCode(10);
+			var accode = createACCode(6);
 			console.log(results);
 			if(results.length == 0) {
 				// do nothing
