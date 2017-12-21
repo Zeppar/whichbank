@@ -3,7 +3,7 @@ var UserSQL = {
 	queryAll: 'SELECT * FROM User',
 	getUserByPhone: 'SELECT * FROM User WHERE phone = ?',
 	getUserByUserId: 'SELECT * FROM User WHERE userid = ?',
-	activeUserByUserid: 'UPDATE User SET acstatus = ？ where userid = ?',
+	activeUserByUserid: 'UPDATE User SET acstatus = ? where userid = ?',
 	getManagerByUsername: 'SELECT * FROM Manager where username = ?'
 };
 module.exports = UserSQL;
