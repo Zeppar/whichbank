@@ -420,6 +420,7 @@ router.post('/active', function(req, res) {
 									console.log("change active code status successfully!");
 								}
 							});
+							req.session.user.acstatus = 1;
 							res.json({
 								"status": 1,
 								"message": "激活成功",
