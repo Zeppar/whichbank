@@ -35,7 +35,6 @@ function createACCode(_idx) {
 
 function contains(arr, obj) {
 	for(var i = 0; i < arr.length; i++) {
-		console.log(arr[i] + "---" + obj);
 		if(arr[i] == obj) {
 			return true;
 		}
