@@ -22,13 +22,13 @@ function createACCode(_idx) {
 	var str = '';
 	for(var i = 0; i < _idx; i += 1) {
 		var t = Math.floor(Math.random() * 10);
-		if(t >= 0 && t < 3) {
-			str += String.fromCharCode(RandomNum(65, 90));
-		} else if(t >= 3 && t < 6) {
-			str += String.fromCharCode(RandomNum(97, 122));
-		} else if(t >= 6 && t <= 9) {
+//		if(t >= 0 && t < 3) {
+//			str += String.fromCharCode(RandomNum(65, 90));
+//		} else if(t >= 3 && t < 6) {
+//			str += String.fromCharCode(RandomNum(97, 122));
+//		} else if(t >= 6 && t <= 9) {
 			str += String.fromCharCode(RandomNum(48, 57));
-		}
+//		}
 	}
 	return str;
 }
