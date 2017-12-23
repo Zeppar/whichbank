@@ -337,13 +337,13 @@ router.post('/register', function(req, res) {
 												'phone': req.body.phone,
 												'username': req.body.name,
 												'idnumber': req.body.idnumber,
-												'userid': req.body.userid,
+												'userid': wechatAssess.openid,
 												'acstatus': 0
 
 											};
 											req.session.user = user;
 											//save to other server
-											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone;
+											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + wechatAssess.openid;
 											request(reqUrl, function(error, response, body) {
 												if(!error && response.statusCode == 200) {
 													console.log(body);
