@@ -409,12 +409,12 @@ router.post('/active', function(req, res) {
 								path: '/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid,
 								method: 'GET'
 							};
-							http.get(reqUrl, function(_req, _res) {
+							http.get(reqUrl, function(request, response) {
 								var html = '';
-								_req.on('data', function(data) {
+								request.on('data', function(data) {
 									html += data;
 								});
-								_res.on('end', function() {
+								response.on('end', function() {
 									console.log("4444444444444");
 									console.info(html);
 									//									req.session.user.acstatus = 1;
