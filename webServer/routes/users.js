@@ -405,11 +405,13 @@ router.post('/active', function(req, res) {
 							const options = {
 								url: reqUrl,
 								method: 'GET',
-								headers: {
-									//									'Accept': 'application/json',
-									'Accept-Charset': 'utf-8'
-									//									'User-Agent': 'my-reddit-client'
-								}
+								encoding: 'utf-8'
+								
+//								headers: {
+//									//									'Accept': 'application/json',
+//									'Accept-Charset': 'utf-8'
+//									//									'User-Agent': 'my-reddit-client'
+//								}
 							};
 							request(options, function(error, response, body) {
 								//								console.log("response.statusCode : " + response.statusCode);
