@@ -35,11 +35,11 @@ router.get('/registergrant', function(req, res, next) {
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
-var wechatAssess = null;
-var wechatUserInfo = null;
+//var wechatAssess = null;
+//var wechatUserInfo = null;
 //注册界面
 router.get('/register', function(req, res, next) {
-	if(req.session.wechatUserInfo == null || req.session.wechatUserInfo == undefined) {
+		if(req.session.wechatUserInfo == null || req.session.wechatUserInfo == undefined) {
 		var param = req.query || req.params;
 		// get access token by code and store it
 		var code = param.code;
@@ -65,9 +65,9 @@ router.get('/register', function(req, res, next) {
 				});
 			}
 		});
-	} else {
-		res.render('register');
 	}
+	console.log(req.session.wechatAssess);
+	res.render('register');
 });
 
 //登录界面
