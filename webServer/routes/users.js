@@ -416,7 +416,7 @@ router.post('/active', function(req, res) {
 								});
 								request.on('end', function() {
 									console.log("4444444444444");
-									console.info(html);
+									console.log(html);
 									//									req.session.user.acstatus = 1;
 									res.json({
 										"status": 1,
