@@ -38,14 +38,14 @@ router.post('/sendCode', function(req, res) {
 	console.log("phone : " + req.body.phone);
 	var code = addNumber(6);
 	client.execute('alibaba.aliqin.fc.sms.num.send', {
-			'fields': 'nick,type,sex,location',
-			'nick': 'sandbox_c_1',
+//			'fields': 'nick,type,sex,location',
+//			'nick': 'sandbox_c_1',
 			'extend': '',
 			'sms_type': 'normal',
 			'sms_free_sign_name': '身份验证',
 			'sms_param': "{code:'" + code + "',product:'微尺伴客'}",
 			'rec_num': req.body.phone,
-			'sms_template_code': "SMS_13256683"
+			'sms_template_code': "SMS_13256687"
 		},
 		function(error, response) {
 			if(!error) {
