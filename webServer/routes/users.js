@@ -9,6 +9,7 @@ var codeSQL = require('../db/Codesql');
 var activeSQL = require('../db/Activesql');
 var router = express.Router();
 var request = require('request');
+var http = require('http');
 
 var connection = mysql.createConnection({
 	host: '101.200.166.241',
@@ -402,7 +403,24 @@ router.post('/active', function(req, res) {
 							//save to other server
 							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 							console.log("request Url : " + reqUrl);
-							const options = {
+							http.get(reqUrl, function(req, res) {
+								var html = '';
+								req.on('data', function(data) {
+									html += data;
+								});
+								req.on('end', function() {
+									console.log("4444444444444");
+									console.info(html);
+									req.session.user.acstatus = 1;
+									res.json({
+										"status": 1,
+										"message": "激活成功",
+										"url": "/users/usercenter"
+									});
+
+								});
+							});
+							/*const options = {
 								url: reqUrl,
 								encoding: null,
 								headers: {
@@ -447,11 +465,7 @@ router.post('/active', function(req, res) {
 									});
 								}
 							});
-							//							res.json({
-							//								"status": 1,
-							//								"message": "激活成功",
-							//								"url": "/users/usercenter"
-							//							});
+								*/
 						}
 					});
 				} else {
