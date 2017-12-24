@@ -342,33 +342,10 @@ router.post('/register', function(req, res) {
 
 											};
 											req.session.user = user;
-											//save to other server
-											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + wechatAssess.openid;
-											console.log("request Url : " + reqUrl);
-											request(reqUrl, function(error, response, body) {
-												if(!error && response.statusCode == 200) {
-													console.log(body);
-													if(body.startsWith('Y')) {
-														console.log("成功");
-														res.json({
-															"status": 1,
-															"message": "注册成功",
-															"url": "/users/active"
-														});
-													} else {
-														console.log("失败");
-														res.json({
-															"status": -1,
-															"message": "注册失败"
-														});
-													}
-												} else {
-													console.log('error');
-													res.json({
-														"status": -1,
-														"message": "注册失败"
-													});
-												}
+											res.json({
+												"status": 1,
+												"message": "注册成功",
+												"url": "/users/active"
 											});
 										}
 									});
@@ -413,20 +390,48 @@ router.post('/active', function(req, res) {
 						if(error) {
 							throw error;
 						} else {
-							// delete active code
-							connection.query(activeSQL.changeCodeStatus, [req.body.code], function(error, results) {
-								if(error) {
-									throw error;
+							//save to other server
+							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + wechatAssess.openid;
+							console.log("request Url : " + reqUrl);
+							request(reqUrl, function(error, response, body) {
+								if(!error && response.statusCode == 200) {
+									console.log(body);
+									if(body.startsWith('Y')) {
+										console.log("成功");
+										// delete active code
+										connection.query(activeSQL.changeCodeStatus, [req.body.code], function(error, results) {
+											if(error) {
+												throw error;
+											} else {
+												console.log("change active code status successfully!");
+											}
+										});
+										req.session.user.acstatus = 1;
+										res.json({
+											"status": 1,
+											"message": "激活成功",
+											"url": "/users/usercenter"
+										});
+									} else {
+										console.log("失败");
+										res.json({
+											"status": -1,
+											"message": "激活失败"
+										});
+									}
 								} else {
-									console.log("change active code status successfully!");
+									console.log('error');
+									res.json({
+										"status": -1,
+										"message": "激活失败"
+									});
 								}
 							});
-							req.session.user.acstatus = 1;
-							res.json({
-								"status": 1,
-								"message": "激活成功",
-								"url": "/users/usercenter"
-							});
+//							res.json({
+//								"status": 1,
+//								"message": "激活成功",
+//								"url": "/users/usercenter"
+//							});
 						}
 					});
 				} else {
