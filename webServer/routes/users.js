@@ -412,7 +412,8 @@ router.post('/active', function(req, res) {
 							http.get(reqUrl, function(request, response) {
 								var html = '';
 								request.on('data', function(data) {
-									html += data;
+									console.log("1111 : " + data.toString());
+									html += data.toString();
 								});
 								request.on('end', function() {
 									console.log("4444444444444");
