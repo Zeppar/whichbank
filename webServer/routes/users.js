@@ -403,6 +403,12 @@ router.post('/active', function(req, res) {
 							//save to other server
 							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 							console.log("request Url : " + reqUrl);
+							var options = {
+								hostname: 'http://139.196.124.72',
+								port: 28889,
+								path: '/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid,
+								method: 'GET'
+							};
 							http.get(reqUrl, function(req, res) {
 								var html = '';
 								req.on('data', function(data) {
@@ -411,7 +417,7 @@ router.post('/active', function(req, res) {
 								req.on('end', function() {
 									console.log("4444444444444");
 									console.info(html);
-									req.session.user.acstatus = 1;
+									//									req.session.user.acstatus = 1;
 									res.json({
 										"status": 1,
 										"message": "激活成功",
