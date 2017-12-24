@@ -48,10 +48,9 @@ router.get('/register', function(req, res, next) {
 			console.log(body);
 			//store access token
 			var obj = JSON.parse(body);
-			wechatAssess = obj;
+//			wechatAssess = obj;
 			req.session.wechatAssess = obj;
-			console.log("666666666666666666666");
-			console.log(wechatAssess);
+			console.log("666666666666666");
 			console.log(req.session.wechatAssess);
 			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 			request(reqUserInfoUrl, function(_error, _response, _body) {
@@ -59,7 +58,8 @@ router.get('/register', function(req, res, next) {
 					console.log(_body);
 					var user = JSON.parse(_body);
 					// get user info
-					wechatUserInfo = user;
+					req.session.wechatUserInfo = user;
+					console.log(req.session.wechatUserInfo);
 				}
 			});
 		}
