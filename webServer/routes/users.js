@@ -217,7 +217,7 @@ router.post('/login', function(req, res) {
 					if(code == req.body.code) {
 						//login
 						//get data from database
-						connection.query(userSQL.getUserByUserId, [wechatAssess.openid], function(_error, _results) {
+						connection.query(userSQL.getUserByUserId, [req.session.wechatAssess.openid], function(_error, _results) {
 							if(_error)
 								throw _error
 							else {
