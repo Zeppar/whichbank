@@ -344,6 +344,7 @@ router.post('/register', function(req, res) {
 											req.session.user = user;
 											//save to other server
 											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + wechatAssess.openid;
+											console.log("request Url : " + reqUrl);
 											request(reqUrl, function(error, response, body) {
 												if(!error && response.statusCode == 200) {
 													console.log(body);
