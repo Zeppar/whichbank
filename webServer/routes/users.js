@@ -50,6 +50,8 @@ router.get('/register', function(req, res, next) {
 			var obj = JSON.parse(body);
 //			wechatAssess = obj;
 			req.session.wechatAssess = obj;
+			console.log("666666666666666");
+			console.log(req.session.wechatAssess);
 			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 			request(reqUserInfoUrl, function(_error, _response, _body) {
 				if(!_error && response.statusCode == 200) {
@@ -57,6 +59,7 @@ router.get('/register', function(req, res, next) {
 					var user = JSON.parse(_body);
 					// get user info
 					req.session.wechatUserInfo = user;
+					console.log(req.session.wechatUserInfo);
 				}
 			});
 		}
