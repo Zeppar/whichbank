@@ -39,6 +39,7 @@ router.get('/registergrant', function(req, res, next) {
 //var wechatUserInfo = null;
 //注册界面
 router.get('/register', function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
 		if(req.session.wechatUserInfo == null || req.session.wechatUserInfo == undefined) {
 		var param = req.query || req.params;
 		// get access token by code and store it
