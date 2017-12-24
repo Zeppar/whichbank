@@ -35,8 +35,8 @@ router.get('/registergrant', function(req, res, next) {
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
-var wechatAssess = null;
-var wechatUserInfo = null;
+//var wechatAssess = null;
+//var wechatUserInfo = null;
 //注册界面
 router.get('/register', function(req, res, next) {
 	var param = req.query || req.params;
@@ -50,7 +50,6 @@ router.get('/register', function(req, res, next) {
 			var obj = JSON.parse(body);
 //			wechatAssess = obj;
 			req.session.wechatAssess = obj;
-			console.log("666666666666666");
 			console.log(req.session.wechatAssess);
 			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 			request(reqUserInfoUrl, function(_error, _response, _body) {
@@ -79,14 +78,14 @@ router.get('/login', function(req, res, next) {
 				console.log(body);
 				//store access token
 				var obj = JSON.parse(body);
-				wechatAssess = obj;
+				req.session.wechatAssess = obj;
 				var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 				request(reqUserInfoUrl, function(_error, _response, _body) {
 					if(!_error && response.statusCode == 200) {
 						console.log(_body);
 						var user = JSON.parse(_body);
 						// get user info
-						wechatUserInfo = user;
+						req.session.wechatUserInfo = user;
 					}
 				});
 			}
@@ -179,8 +178,8 @@ router.post('/login', function(req, res) {
 	//	console.log(req.body.phone);
 	//	console.log(req.body.code);
 
-	req.session.wechatAssess = wechatAssess;
-	req.session.wechatUserInfo = wechatUserInfo;
+//	req.session.wechatAssess = wechatAssess;
+//	req.session.wechatUserInfo = wechatUserInfo;
 
 	//check if code is right
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
@@ -278,8 +277,8 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
-	req.session.wechatAssess = wechatAssess;
-	req.session.wechatUserInfo = wechatUserInfo;
+//	req.session.wechatAssess = wechatAssess;
+//	req.session.wechatUserInfo = wechatUserInfo;
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
@@ -308,8 +307,8 @@ router.post('/register', function(req, res) {
 				} else {
 					if(code == req.body.code) {
 						//	find in database
-						console.log("wechatAssess.openid : " + wechatAssess.openid);
-						connection.query(userSQL.getUserByUserId, [wechatAssess.openid], function(error, results) {
+//						console.log("wechatAssess.openid : " + wechatAssess.openid);
+						connection.query(userSQL.getUserByUserId, [req.session.wechatAssess.openid], function(error, results) {
 							if(error) {
 								throw error;
 							} else {
@@ -325,8 +324,8 @@ router.post('/register', function(req, res) {
 									// 直接返回数据
 									// res.json({"status":1});
 									//add
-									console.log('start reg');
-									connection.query(userSQL.insert, [wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0], function(err, results) {
+									console.log('start reg : ' + req.session.wechatAssess.openid);
+									connection.query(userSQL.insert, [req.session.wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0], function(err, results) {
 										if(error) {
 											throw error;
 										} else {
@@ -342,7 +341,7 @@ router.post('/register', function(req, res) {
 												'phone': req.body.phone,
 												'username': req.body.name,
 												'idnumber': req.body.idnumber,
-												'userid': wechatAssess.openid,
+												'userid': req.session.wechatAssess.openid,
 												'acstatus': 0
 
 											};
@@ -396,7 +395,7 @@ router.post('/active', function(req, res) {
 							throw error;
 						} else {
 							//save to other server
-							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + wechatAssess.openid;
+							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 							console.log("request Url : " + reqUrl);
 							request(reqUrl, function(error, response, body) {
 								if(!error && response.statusCode == 200) {
