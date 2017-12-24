@@ -402,7 +402,7 @@ router.post('/active', function(req, res) {
 							//save to other server
 							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 							console.log("request Url : " + reqUrl);
-							request({encoding: null, url: encodeURI(reqUrl)}, function(error, response, body) {
+							request({encoding: "text/html;charset='charset=utf-8'", url: reqUrl}, function(error, response, body) {
 //								console.log("response.statusCode : " + response.statusCode);
 								if(!error && response.statusCode == 200) {
 									console.log(body);
