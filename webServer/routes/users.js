@@ -404,7 +404,6 @@ router.post('/active', function(req, res) {
 							//							console.log("request Url : " + reqUrl);
 							const options = {
 								url: reqUrl,
-								method: 'GET',
 								encoding: 'utf-8'
 								
 //								headers: {
@@ -414,7 +413,7 @@ router.post('/active', function(req, res) {
 //								}
 							};
 							request(options, function(error, response, body) {
-								//								console.log("response.statusCode : " + response.statusCode);
+								console.log("response.statusCode : " + response.statusCode);
 								if(!error && response.statusCode == 200) {
 									console.log(body);
 									if(body.startsWith('Y')) {
