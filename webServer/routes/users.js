@@ -401,13 +401,13 @@ router.post('/active', function(req, res) {
 						} else {
 							//save to other server
 							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
-							//							console.log("request Url : " + reqUrl);
+							console.log("request Url : " + reqUrl);
 							const options = {
 								url: reqUrl,
 								encoding: null,
 								
 								headers: {
-									'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'  
+									'Content-Type': 'application/x-www-form-urlencoded'  
 									//									'Accept': 'application/json',
 //									'Accept-Charset': 'utf-8'
 									//									'User-Agent': 'my-reddit-client'
