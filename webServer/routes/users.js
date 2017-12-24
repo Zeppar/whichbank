@@ -404,13 +404,14 @@ router.post('/active', function(req, res) {
 							//							console.log("request Url : " + reqUrl);
 							const options = {
 								url: reqUrl,
-								encoding: 'utf-8'
+								encoding: null,
 								
-//								headers: {
-//									//									'Accept': 'application/json',
+								headers: {
+									'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'  
+									//									'Accept': 'application/json',
 //									'Accept-Charset': 'utf-8'
-//									//									'User-Agent': 'my-reddit-client'
-//								}
+									//									'User-Agent': 'my-reddit-client'
+								}
 							};
 							request(options, function(error, response, body) {
 								console.log("response.statusCode : " + response.statusCode);
