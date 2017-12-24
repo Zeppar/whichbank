@@ -35,8 +35,8 @@ router.get('/registergrant', function(req, res, next) {
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
-//var wechatAssess = null;
-//var wechatUserInfo = null;
+var wechatAssess = null;
+var wechatUserInfo = null;
 //注册界面
 router.get('/register', function(req, res, next) {
 	var param = req.query || req.params;
@@ -45,7 +45,7 @@ router.get('/register', function(req, res, next) {
 	var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
 	request(reqAccessUrl, function(error, response, body) {
 		if(!error && response.statusCode == 200) {
-			console.log(body);
+			console.log("console body :" + body);
 			//store access token
 			var obj = JSON.parse(body);
 //			wechatAssess = obj;
@@ -54,7 +54,7 @@ router.get('/register', function(req, res, next) {
 			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 			request(reqUserInfoUrl, function(_error, _response, _body) {
 				if(!_error && response.statusCode == 200) {
-					console.log(_body);
+					console.log("console body 2 : " + _body);
 					var user = JSON.parse(_body);
 					// get user info
 					req.session.wechatUserInfo = user;
@@ -90,6 +90,7 @@ router.get('/login', function(req, res, next) {
 						var user = JSON.parse(_body);
 						// get user info
 						req.session.wechatUserInfo = user;
+						res.redirect('logingrant');
 					}
 				});
 			}
