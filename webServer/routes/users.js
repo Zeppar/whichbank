@@ -70,6 +70,7 @@ router.get('/register', function(req, res, next) {
 //登录界面
 router.get('/login', function(req, res, next) {
 	var param = req.query || req.params;
+	console.log(req.session.wechatAssess);
 	// get access token by code and store it
 	var code = param.code;
 	if(code != undefined) {
