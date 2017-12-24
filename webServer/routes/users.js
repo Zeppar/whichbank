@@ -49,21 +49,23 @@ router.get('/register', function(req, res, next) {
 				console.log("console body :" + body);
 				//store access token
 				var obj = JSON.parse(body);
-				req.session.wechatAssess = body;
+				req.session.wechatAssess = obj;
 				var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
 				request(reqUserInfoUrl, function(_error, _response, _body) {
-					if(!_error && response.statusCode == 200) {
+					if(!_error && _response.statusCode == 200) {
 						console.log("console body 2 : " + _body);
 						var user = JSON.parse(_body);
 						// get user info
-						req.session.wechatUserInfo = _body;
+						req.session.wechatUserInfo = user;
+						res.render('register');
 					}
 				});
 			}
 		});
-	} 
-	console.log(req.session.wechatAssess);
-	res.render('register');
+	} else {
+		console.log(req.session.wechatAssess);
+		res.render('register');
+	}
 });
 
 //登录界面
