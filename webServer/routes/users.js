@@ -405,7 +405,6 @@ router.post('/active', function(req, res) {
 							const options = {
 								url: reqUrl,
 								encoding: null,
-								
 								headers: {
 									'Content-Type': 'application/x-www-form-urlencoded;charset=gb2312'  
 									//									'Accept': 'application/json',
