@@ -63,6 +63,7 @@ router.get('/register', function(req, res, next) {
 			});
 		}
 	});
+	console.log(req.session.wechatAssess);
 	res.render('register');
 });
 
