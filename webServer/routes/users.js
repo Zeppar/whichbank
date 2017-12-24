@@ -294,7 +294,8 @@ router.post('/register', function(req, res) {
 				var time = results[0].timestamp;
 				//judge if it is out of date
 				var currentTime = new Date().getTime();
-				if(currentTime - time > 60 * 1000 * 5) {
+//				if(currentTime - time > 60 * 1000 * 5) {
+				if(0) {
 					//delete code
 					connection.query(codeSQL.deleteCodeByPhone, [req.body.phone], function(_error2, _result2) {
 						if(error)
