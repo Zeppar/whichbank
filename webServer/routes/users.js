@@ -39,34 +39,35 @@ var wechatAssess = null;
 var wechatUserInfo = null;
 //注册界面
 router.get('/register', function(req, res, next) {
-	var param = req.query || req.params;
-	// get access token by code and store it
-	var code = param.code;
-	var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
-	request(reqAccessUrl, function(error, response, body) {
-		if(!error && response.statusCode == 200) {
-			console.log("console body :" + body);
-			//store access token
-			var obj = JSON.parse(body);
-//			wechatAssess = obj;
-			req.session.wechatAssess = obj;
-//			console.log(req.session.wechatAssess);
-			var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
-			request(reqUserInfoUrl, function(_error, _response, _body) {
-				if(!_error && response.statusCode == 200) {
-					console.log("console body 2 : " + _body);
-					var user = JSON.parse(_body);
-					// get user info
-					req.session.wechatUserInfo = user;
-//					console.log(req.session.wechatUserInfo);
-				}
-			});
-		}
-	});
-	console.log("render register");
-	console.log(req.session.wechatAssess);
-	
-	res.render('register');
+	if(req.session.wechatUserInfo == null || req.session.wechatUserInfo == undefined) {
+		var param = req.query || req.params;
+		// get access token by code and store it
+		var code = param.code;
+		var currentReq = req;
+		var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
+		request(reqAccessUrl, function(error, response, body) {
+			if(!error && response.statusCode == 200) {
+				console.log("console body :" + body);
+				//store access token
+				var obj = JSON.parse(body);
+//				wechatAssess = obj;
+				currentReq.session.wechatAssess = obj;
+				//			console.log(req.session.wechatAssess);
+				var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
+				request(reqUserInfoUrl, function(_error, _response, _body) {
+					if(!_error && response.statusCode == 200) {
+						console.log("console body 2 : " + _body);
+						var user = JSON.parse(_body);
+						// get user info
+						currentReq.session.wechatUserInfo = user;
+						//					console.log(req.session.wechatUserInfo);
+					}
+				});
+			}
+		});
+	} else {
+		res.render('register');
+	}
 });
 
 //登录界面
@@ -183,8 +184,8 @@ router.post('/login', function(req, res) {
 	//	console.log(req.body.phone);
 	//	console.log(req.body.code);
 
-//	req.session.wechatAssess = wechatAssess;
-//	req.session.wechatUserInfo = wechatUserInfo;
+	//	req.session.wechatAssess = wechatAssess;
+	//	req.session.wechatUserInfo = wechatUserInfo;
 
 	//check if code is right
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
@@ -282,8 +283,8 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
-//	req.session.wechatAssess = wechatAssess;
-//	req.session.wechatUserInfo = wechatUserInfo;
+	//	req.session.wechatAssess = wechatAssess;
+	//	req.session.wechatUserInfo = wechatUserInfo;
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
@@ -312,7 +313,7 @@ router.post('/register', function(req, res) {
 				} else {
 					if(code == req.body.code) {
 						//	find in database
-//						console.log("wechatAssess.openid : " + wechatAssess.openid);
+						//						console.log("wechatAssess.openid : " + wechatAssess.openid);
 						connection.query(userSQL.getUserByUserId, [req.session.wechatAssess.openid], function(error, results) {
 							if(error) {
 								throw error;
@@ -436,11 +437,11 @@ router.post('/active', function(req, res) {
 									});
 								}
 							});
-//							res.json({
-//								"status": 1,
-//								"message": "激活成功",
-//								"url": "/users/usercenter"
-//							});
+							//							res.json({
+							//								"status": 1,
+							//								"message": "激活成功",
+							//								"url": "/users/usercenter"
+							//							});
 						}
 					});
 				} else {
