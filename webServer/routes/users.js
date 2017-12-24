@@ -407,7 +407,7 @@ router.post('/active', function(req, res) {
 								encoding: null,
 								
 								headers: {
-									'Content-Type': 'application/x-www-form-urlencoded'  
+									'Content-Type': 'application/x-www-form-urlencoded;charset=gb2312'  
 									//									'Accept': 'application/json',
 //									'Accept-Charset': 'utf-8'
 									//									'User-Agent': 'my-reddit-client'
