@@ -9,7 +9,6 @@ var codeSQL = require('../db/Codesql');
 var activeSQL = require('../db/Activesql');
 var router = express.Router();
 var request = require('request');
-var http = require('http');
 
 var connection = mysql.createConnection({
 	host: '101.200.166.241',
@@ -403,35 +402,12 @@ router.post('/active', function(req, res) {
 							//save to other server
 							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 							console.log("request Url : " + reqUrl);
-							var options = {
-								hostname: 'http://139.196.124.72',
-								port: 28889,
-								path: '/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid,
-								method: 'GET'
-							};
-							http.get(reqUrl, function(request, response) {
-								var html = '';
-								request.on('data', function(data) {
-									console.log("1111 : " + data.toString());
-									html += data.toString();
-								});
-								request.on('end', function() {
-									console.log("4444444444444");
-									console.log(html);
-									//									req.session.user.acstatus = 1;
-									res.json({
-										"status": 1,
-										"message": "激活成功",
-										"url": "/users/usercenter"
-									});
-
-								});
-							});
-							/*const options = {
+							const options = {
 								url: reqUrl,
 								encoding: null,
+								
 								headers: {
-									'Content-Type': 'application/x-www-form-urlencoded;charset=gb2312'  
+									'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'  
 									//									'Accept': 'application/json',
 //									'Accept-Charset': 'utf-8'
 									//									'User-Agent': 'my-reddit-client'
@@ -472,7 +448,11 @@ router.post('/active', function(req, res) {
 									});
 								}
 							});
-								*/
+							//							res.json({
+							//								"status": 1,
+							//								"message": "激活成功",
+							//								"url": "/users/usercenter"
+							//							});
 						}
 					});
 				} else {
