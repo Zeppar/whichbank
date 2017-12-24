@@ -401,16 +401,16 @@ router.post('/active', function(req, res) {
 							//save to other server
 							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 							console.log("request Url : " + reqUrl);
-							request(reqUrl, function(_error, response, body) {
+							request(reqUrl, function(error, response, body) {
 								console.log("response.statusCode : " + response.statusCode);
-								if(!_error && response.statusCode == 200) {
+								if(!error && response.statusCode == 200) {
 									console.log(body);
 									if(body.startsWith('Y')) {
 										console.log("成功");
 										// delete active code
-										connection.query(activeSQL.changeCodeStatus, [req.body.code], function(_error2, results) {
-											if(_error2) {
-												throw _error2;
+										connection.query(activeSQL.changeCodeStatus, [req.body.code], function(error, results) {
+											if(error) {
+												throw error;
 											} else {
 												console.log("change active code status successfully!");
 											}
