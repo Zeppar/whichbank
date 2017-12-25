@@ -400,19 +400,7 @@ router.post('/active', function(req, res) {
 							throw error;
 						} else {
 							//save to other server
-							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.phone + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
-							console.log("request Url : " + reqUrl);
-							const options = {
-								url: reqUrl,
-								encoding: null,
-								headers: {
-									'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'  
-									//									'Accept': 'application/json',
-//									'Accept-Charset': 'utf-8'
-									//									'User-Agent': 'my-reddit-client'
-								}
-							};
-							request(options, function(error, response, body) {
+							request(reqUrl, function(error, response, body) {
 								console.log("response.statusCode : " + response.statusCode);
 								if(!error && response.statusCode == 200) {
 									console.log(body);
