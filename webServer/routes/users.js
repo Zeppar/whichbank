@@ -400,6 +400,7 @@ router.post('/active', function(req, res) {
 							throw error;
 						} else {
 							//save to other server
+							var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.phone + '&mc=' + req.session.user.username + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 							request(reqUrl, function(error, response, body) {
 								console.log("response.statusCode : " + response.statusCode);
 								if(!error && response.statusCode == 200) {
