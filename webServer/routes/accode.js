@@ -58,7 +58,7 @@ router.post('/create', function(req, res) {
 					list[i] = results[i].code;
 				}
 				while(contains(list, accode)) {
-					accode = createACCode(10);
+					accode = createACCode(6);
 				}
 			}
 			//insert
