@@ -107,34 +107,26 @@
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="height: 100px;padding-right: 0;">
 							<img src="<%=icon%>" style="width: 80px;height: 80px;margin-top: 10px;margin-left: -20px;">
 						</div>
-						<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 70px;background-color: red;padding: 0;">
-							<img id="barcode1" style="width: 100%;height: 100%;" />
-						</div>
-						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 20px;text-align: center;padding: 0;">
-							
-						</div>-->
-
 					</div>
 				</div>
 				<div class="panles" style="height: auto!important; text-align:center">
 					<img id="qrcode" src="/qrcode/show" style="margin: 0px;padding: 0;"></img>
 				</div>
-				<!--<div class="mui-text-center" style="margin-top:25px;margin-left: 15px;margin-right: 15px;">
-					<form id="logoutForm" action="/users/logout" method="get">
-						<a class="mui-btn mui-btn-success mui-btn-block log-in" onclick="logout()" style="background-color: #FF4040;border:0;">
-							退出会员中心
-						</a>
-					</form>
-				</div>-->
+				<div class="panles" style="height: 40px; text-align:center">
+					<label style="color: #868686;font-size: 12px;" id="currentTime"></label>
+				</div>
 			</div>
 			<script type="text/javascript">
-//				$(function() {　　
-//					$("#erCode").qrcode({
-//						width: 200, //宽度 
-//						height: 200, //高度 
-//						text: "www.helloweba.com" //任意内容 
-//					});
-//				});
+				$(function() {
+					clock();
+					setInterval("clock()", 1000)
+				});
+
+				function clock() {
+					var d = new Date()
+					document.getElementById("currentTime").innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate()
+					+ "日 " + d.getHours() + ":" + (d.getMinutes() > 9 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (d.getSeconds() > 9 ? d.getSeconds() : "0" + d.getSeconds());
+				}
 			</script>
 	</body>
 
