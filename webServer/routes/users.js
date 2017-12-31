@@ -49,17 +49,21 @@ router.get('/register', function(req, res, next) {
 				console.log("console body :" + body);
 				//store access token
 				var obj = JSON.parse(body);
-				req.session.wechatAssess = obj;
-				var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
-				request(reqUserInfoUrl, function(_error, _response, _body) {
-					if(!_error && _response.statusCode == 200) {
-						console.log("console body 2 : " + _body);
-						var user = JSON.parse(_body);
-						// get user info
-						req.session.wechatUserInfo = user;
-						res.render('register');
-					}
-				});
+				if(obj.errcode != undefined) {
+					res.render('register');
+				} else {
+					req.session.wechatAssess = obj;
+					var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
+					request(reqUserInfoUrl, function(_error, _response, _body) {
+						if(!_error && _response.statusCode == 200) {
+							console.log("console body 2 : " + _body);
+							var user = JSON.parse(_body);
+							// get user info
+							req.session.wechatUserInfo = user;
+							res.render('register');
+						}
+					});
+				}
 			}
 		});
 	} else {
@@ -81,17 +85,21 @@ router.get('/login', function(req, res, next) {
 				console.log(body);
 				//store access token
 				var obj = JSON.parse(body);
-				req.session.wechatAssess = obj;
-				var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
-				request(reqUserInfoUrl, function(_error, _response, _body) {
-					if(!_error && response.statusCode == 200) {
-						console.log(_body);
-						var user = JSON.parse(_body);
-						// get user info
-						req.session.wechatUserInfo = user;
-						res.redirect('logingrant');
-					}
-				});
+				if(obj.errcode != undefined) {
+					res.render('register');
+				} else {
+					req.session.wechatAssess = obj;
+					var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
+					request(reqUserInfoUrl, function(_error, _response, _body) {
+						if(!_error && response.statusCode == 200) {
+							console.log(_body);
+							var user = JSON.parse(_body);
+							// get user info
+							req.session.wechatUserInfo = user;
+							res.redirect('logingrant');
+						}
+					});
+				}
 			}
 		});
 		res.render('login');
