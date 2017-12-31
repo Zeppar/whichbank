@@ -38,8 +38,8 @@ router.post('/sendCode', function(req, res) {
 	console.log("phone : " + req.body.phone);
 	var code = addNumber(6);
 	client.execute('alibaba.aliqin.fc.sms.num.send', {
-//			'fields': 'nick,type,sex,location',
-//			'nick': 'sandbox_c_1',
+			//			'fields': 'nick,type,sex,location',
+			//			'nick': 'sandbox_c_1',
 			'extend': '',
 			'sms_type': 'normal',
 			'sms_free_sign_name': '身份验证',
@@ -55,11 +55,11 @@ router.post('/sendCode', function(req, res) {
 						throw error;
 					else {
 						console.log(results);
+						var timestamp = new Date().getTime();
+						console.log(timestamp);
 						if(results.length != 0) {
 							//exist  -- change
 							console.log('change');
-							var timestamp = new Date().getTime();
-							console.log(timestamp);
 							connection.query(codeSQL.changeCodeByPhone, [code, timestamp, req.body.phone], function(error, results) {
 								if(error)
 									throw error;
