@@ -55,7 +55,7 @@ router.post('/sendCode', function(req, res) {
 						throw error;
 					else {
 						console.log(results);
-						var timestamp = new Date().getTime();
+						var timestamp = new Date().getTime()
 						console.log(timestamp);
 						if(results.length != 0) {
 							//exist  -- change
