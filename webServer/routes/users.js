@@ -9,6 +9,9 @@ var codeSQL = require('../db/Codesql');
 var activeSQL = require('../db/Activesql');
 var router = express.Router();
 var request = require('request');
+var formidable = require('formidable');
+var node_xlsx = require('node-xlsx');
+var fs = require('fs');
 
 var connection = mysql.createConnection({
 	host: '101.200.166.241',
@@ -24,8 +27,9 @@ var config = {
 	secret: '3cb12066cc52b6ccf13686194a77dcc1'
 };
 
-// get request
-router.get('/logingrant', function(req, res, next) {
+// get request  -- unused
+/*
+ * router.get('/logingrant', function(req, res, next) {
 	//	res.send('respond with a resource');
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/login&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
@@ -34,12 +38,11 @@ router.get('/registergrant', function(req, res, next) {
 	//	res.send('respond with a resource');
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
+*/
 
-//var wechatAssess = null;
-//var wechatUserInfo = null;
 //注册界面
 router.get('/register', function(req, res, next) {
-	if(req.session.wechatUserInfo == null || req.session.wechatUserInfo == undefined) {
+	/*if(req.session.wechatUserInfo == null || req.session.wechatUserInfo == undefined) {
 		var param = req.query || req.params;
 		// get access token by code and store it
 		var code = param.code;
@@ -69,12 +72,13 @@ router.get('/register', function(req, res, next) {
 	} else {
 		console.log(req.session.wechatAssess);
 		res.render('register');
-	}
+	}*/
+	res.render("register");
 });
 
 //登录界面
 router.get('/login', function(req, res, next) {
-	var param = req.query || req.params;
+	/*var param = req.query || req.params;
 	console.log(req.session.wechatAssess);
 	// get access token by code and store it
 	var code = param.code;
@@ -96,16 +100,16 @@ router.get('/login', function(req, res, next) {
 							var user = JSON.parse(_body);
 							// get user info
 							req.session.wechatUserInfo = user;
-							res.redirect('logingrant');
+							res.render('login');
 						}
 					});
 				}
 			}
 		});
-		res.render('login');
 	} else {
 		res.render('login');
-	}
+	}*/
+	res.render('login');
 });
 
 router.get('/active', function(req, res, next) {
@@ -123,13 +127,76 @@ router.get('/adminLogin', function(req, res, next) {
 	res.render('mgrLogin');
 });
 
-//登出
-//router.get('/logout', function(req, res, next) {
-//	req.session.user = null;
-//	res.render('login');
-//});
-
 router.get("/usercenter", function(req, res) {
+	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/findDir&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
+});
+
+router.get("/findDir", function(req, res) {
+	var param = req.query || req.params;
+	// get access token by code and store it
+	var code = param.code;
+	if(code != null) {
+		var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
+		request(reqAccessUrl, function(error, response, body) {
+			if(!error && response.statusCode == 200) {
+				console.log("console body :" + body);
+				//store access token
+				var obj = JSON.parse(body);
+				if(obj.errcode != undefined) {
+					res.render('register');
+				} else {
+					req.session.wechatAssess = obj;
+					var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
+					request(reqUserInfoUrl, function(_error, _response, _body) {
+						if(!_error && _response.statusCode == 200) {
+							console.log("console body 2 : " + _body);
+							var user = JSON.parse(_body);
+							if(user.errcode != undefined) {
+								res.render('register');
+							} else {
+								// get user info
+								req.session.wechatUserInfo = user;
+								// judge dir
+								connection.query(userSQL.getUserByUserId, [req.session.wechatUserInfo.openid], function(error, results) {
+									if(error) {
+										throw error;
+									} else {
+										if(results.length != 0) {
+											//is register
+											var user = {
+												'phone': _results[0].phone,
+												'username': _results[0].name,
+												'idnumber': _results[0].idnumber,
+												'userid': _results[0].userid,
+												'acstatus': _results[0].acstatus
+											};
+											req.session.user = user;
+											if(req.session.user.acstatus != 0) {
+												res.render("usercenter", {
+													username: req.session.user.username,
+													phone: req.session.user.phone,
+													icon: req.session.wechatUserInfo.headimgurl
+												});
+											} else {
+												res.render("active");
+											}
+										} else {
+											res.render("register");
+										}
+									}
+								});
+							}
+						}
+					});
+				}
+			}
+		});
+	} else {
+		res.redirect('usercenter');
+	}
+});
+
+/*router.get("/usercenter", function(req, res) {
 	if(req.session.wechatAssess != null && req.session.wechatAssess != undefined) {
 		// get current userinfo by token and openid
 		var reqUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + req.session.wechatAssess.access_token + '&openid=' + req.session.wechatAssess.openid + '&lang=zh_CN';
@@ -138,8 +205,19 @@ router.get("/usercenter", function(req, res) {
 				console.log(body);
 				var obj = JSON.parse(body);
 				// store user info to session and init usercenter page
-				if(obj.errcode != undefined /*token is out of date*/ ) {
-					res.redirect('logingrant');
+			if(obj.errcode != undefined) {				
+					var refreshURL = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=wx99de7fe83e043204&grant_type=refresh_token&refresh_token=" + req.session.wechatAssess.refresh_token;
+					request(reqUrl, function(error2, response2, body2) {
+						if(!error2 && response2.statusCode == 200) {
+							var obj2 = JSON.parse(body2);
+							if(obj2.errcode != undefined) {
+								res.redirect('logingrant');
+							} else {
+								req.session.wechatAssess = 
+								res.redirect("usercenter");
+							}
+						}
+					});
 				} else {
 					// if token is not out of date
 					if(req.session.user != null && req.session.user != undefined) {
@@ -163,6 +241,8 @@ router.get("/usercenter", function(req, res) {
 		res.redirect('registergrant');
 	}
 });
+*/
+
 // post request
 // 判断是否注册
 router.post("/judgeRegister", function(req, res) {
@@ -187,12 +267,6 @@ router.post("/judgeRegister", function(req, res) {
 })
 //登录
 router.post('/login', function(req, res) {
-	//	console.log(req.body.phone);
-	//	console.log(req.body.code);
-
-	//	req.session.wechatAssess = wechatAssess;
-	//	req.session.wechatUserInfo = wechatUserInfo;
-
 	//check if code is right
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
@@ -289,8 +363,6 @@ router.post('/login', function(req, res) {
 //添加用户  post请求
 router.post('/register', function(req, res) {
 	//check if code is right
-	//	req.session.wechatAssess = wechatAssess;
-	//	req.session.wechatUserInfo = wechatUserInfo;
 	connection.query(codeSQL.getCodeByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
@@ -444,11 +516,6 @@ router.post('/active', function(req, res) {
 									});
 								}
 							});
-							//							res.json({
-							//								"status": 1,
-							//								"message": "激活成功",
-							//								"url": "/users/usercenter"
-							//							});
 						}
 					});
 				} else {
@@ -500,5 +567,129 @@ router.post('/adminLogin', function(req, res) {
 		}
 	});
 });
+
+// ******************************** 
+// user import  -- used by manager
+//router.get('/import', function(req, res, next) {
+//	res.render('import');
+//});
+// ********************************
+
+router.post('/import', function(req, res) {
+	/*var form = formidable.IncomingForm({
+		encoding: 'utf-8', //上传编码
+		uploadDir: "public/excels", //上传目录，指的是服务器的路径，如果不存在将会报错。
+		keepExtensions: true, //保留后缀
+		maxFieldsSize: 2 * 1024 * 1024 //byte//最大可上传大小
+	});
+	var allFile = [];
+	var allFile = [];
+	form.on('progress', function(bytesReceived, bytesExpected) { //在控制台打印文件上传进度
+			var progressInfo = {
+				value: bytesReceived,
+				total: bytesExpected
+			};
+			console.log('[progress]: ' + JSON.stringify(progressInfo));
+			//			res.write(JSON.stringify(progressInfo));
+		})
+		.on('file', function(filed, file) {
+			allFile.push([filed, file]); //收集传过来的所有文件
+		})
+		.on('end', function() {
+		})
+		.on('error', function(err) {
+			console.error('上传失败：', err.message);
+			next(err);
+			res.json({
+				"status": 0,
+				"message": "上传失败"
+			});
+		})
+		.parse(req, function(err, fields, files) {
+			if(err) {
+				console.log(err);
+			}
+			allFile.forEach(function(file, index) {
+				var fieldName = file[0];
+				var types = file[1].name.split('.');
+				var date = new Date();
+				var ms = Date.parse(date);
+				var savePath = form.uploadDir + "/" + types[0] + "." + String(types[types.length - 1]);
+				fs.renameSync(file[1].path, savePath); //重命名文件，默认的文件名是带有一串编码的，我们要把它还原为它原先的名字。
+				ExcelParse(savePath);
+			});
+			res.json({
+				"status": 1,
+				"message": "上传成功"
+			});
+		});*/
+	res.json({
+		"status": 0,
+		"message": "暂无此功能"
+	});
+});
+
+function contains(arr, obj) {
+	for(var i = 0; i < arr.length; i++) {
+		if(arr[i] == obj) {
+			return true;
+		}
+	}
+	return false;
+}
+
+var ExcelParse = function(newPath) {
+	console.log("ExcelParse");
+	var obj = node_xlsx.parse(newPath);
+	var excelObj = obj[0].data; //取得第一个excel表的数据  
+
+	//循环遍历表每一行的数据  
+	var sqlOperation = "INSERT INTO UserRealInfo (name, idnumber, phone, cardid) VALUES ";
+	var list = new Array();
+	var findNew = false;
+	connection.query(userSQL.getRealInfo, function(error, results) {
+		if(error) {
+			throw error;
+		} else {
+			if(results.length != 0) {
+				// all user
+				for(var i = 0; i < results.length; i++) {
+					list[i] = results[i].idnumber;
+				}
+				console.log("Add");
+				console.log("length : " + list.length);
+			}
+			// judge if exist
+			for(var i = 2; i < excelObj.length; i++) {
+				var rdata = excelObj[i];
+				// 判断存在性 并存储进数据库
+				if(!contains(list, rdata[2].toString().trim())) {
+					findNew = true;
+					var str = "(";
+					for(var j = 1; j < rdata.length; j++) {
+						str += ('"' + rdata[j].toString().trim() + '"');
+						if(j != rdata.length - 1)
+							str += ",";
+						else
+							str += ")";
+					}
+					str += ","
+					sqlOperation += str;
+				}
+			}
+			if(findNew) {
+				sqlOperation = sqlOperation.substring(0, sqlOperation.length - 1);
+				console.log(sqlOperation);
+				connection.query(sqlOperation, function(error, results) {
+					if(error) {
+						throw error;
+					} else {
+						console.log("导入新用户成功");
+					}
+				});
+			}
+		}
+	});
+};
 
 module.exports = router;

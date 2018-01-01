@@ -64,7 +64,7 @@
 
 			function sendCode() {
 				var data = {
-					phone: $('.js-mobile-val').val()
+					phone: $('.js-mobile-val').val().trim()
 				};
 				if(checkMobile(data)) {
 					confirmSendCode(data)
@@ -155,8 +155,8 @@
 
 			function confirmLogin() {
 				var data = {
-					phone: $('.js-mobile-val').val(),
-					code: $('.vercode').val(),
+					phone: $('.js-mobile-val').val().trim(),
+					code: $('.vercode').val().trim()
 
 				};
 				console.log(data);
