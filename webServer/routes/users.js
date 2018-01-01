@@ -164,11 +164,11 @@ router.get("/findDir", function(req, res) {
 										if(results.length != 0) {
 											//is register
 											var user = {
-												'phone': _results[0].phone,
-												'username': _results[0].name,
-												'idnumber': _results[0].idnumber,
-												'userid': _results[0].userid,
-												'acstatus': _results[0].acstatus
+												'phone': results[0].phone,
+												'username': results[0].name,
+												'idnumber': results[0].idnumber,
+												'userid': results[0].userid,
+												'acstatus': results[0].acstatus
 											};
 											req.session.user = user;
 											if(req.session.user.acstatus != 0) {
