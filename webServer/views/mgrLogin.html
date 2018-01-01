@@ -89,8 +89,8 @@
 
 			function confirmLogin() {
 				var data = {
-					username: $('#username').val(),
-					password: $('#password').val()
+					username: $('#username').val().trim(),
+					password: $('#password').val().trim()
 				};
 				console.log(data);
 				if(checkInfo(data)) {

@@ -76,14 +76,14 @@
 						<div class="mui-input-group" style="margin-bottom: 5px;">
 							<div class="mui-input-row">
 								<label style="color: #868686">性别</label>
-								<input class="mui-text-right" id='gender-picker' type="text" placeholder="" style="color: #868686" />
+								<input class="mui-text-right" id='gender-picker' type="text" placeholder="" style="color: #868686;" readonly="readonly"/>
 								<input id='gender' value="1" type="hidden" />
 							</div>
 						</div>
 						<div class="mui-input-group">
 							<div class="mui-input-row">
 								<label style="color: #868686">生日</label>
-								<input id='birthday-picker' class="mui-text-right birth en" type="text" placeholder="" style="color: #868686" />
+								<input id='birthday-picker' class="mui-text-right birth en" type="text" placeholder="" style="color: #868686" readonly="readonly"/>
 								<input id='birthday' type="hidden" />
 							</div>
 						</div>
@@ -180,7 +180,7 @@
 	<script type="text/javascript">
 		function sendCode() {
 			var data = {
-				phone: $('.js-mobile-val').val()
+				phone: $('.js-mobile-val').val().trim()
 			};
 			if(checkMobile(data)) {
 				confirmSendCode(data)
@@ -307,10 +307,10 @@
 
 		function confirmRegister() {
 			var data = {
-				phone: $('.js-mobile-val').val(),
-				code: $('.vercode').val(),
-				name: $('#name').val(),
-				idnumber: $('#idnumber').val(),
+				phone: $('.js-mobile-val').val().trim(),
+				code: $('.vercode').val().trim(),
+				name: $('#name').val().trim(),
+				idnumber: $('#idnumber').val().trim(),
 				gender: $('#gender').val(),
 				birthday: $('#birthday').val()
 			};

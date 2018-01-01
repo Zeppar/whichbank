@@ -4,6 +4,7 @@ var UserSQL = {
 	getUserByPhone: 'SELECT * FROM User WHERE phone = ?',
 	getUserByUserId: 'SELECT * FROM User WHERE userid = ?',
 	activeUserByUserid: 'UPDATE User SET acstatus = ? where userid = ?',
-	getManagerByUsername: 'SELECT * FROM Manager where username = ?'
+	getManagerByUsername: 'SELECT * FROM Manager where username = ?',
+	getRealInfo: 'SELECT * FROM UserRealInfo'
 };
 module.exports = UserSQL;
