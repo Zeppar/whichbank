@@ -46,6 +46,7 @@
 					code: $('#activecode').val()
 				};
 				if(data.code.trim().length != 0) {
+					$("#confirmBtn").attr("disabled", "disabled");
 					active(data);
 				}
 			}
@@ -77,6 +78,7 @@
 					success: function(res) {
 						console.log("res : " + res["status"]);
 						if(res['status'] != 1) {
+							$("#confirmBtn").attr("disabled", false);
 							return util.toast(res['message'], '', 'error');
 						} else {
 							request.successCallback(res);
@@ -88,6 +90,7 @@
 						} else {
 							util.toast('请求失败，请稍后再试', '', 'error');
 						}
+						$("#confirmBtn").attr("disabled", false);
 					},
 					complete: function() {
 						loading.remove()
@@ -114,7 +117,7 @@
 						</div>
 
 						<div class="mui-text-center" style="margin-top:25px ">
-							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmActive()" style="background-color: #FF4040;border:0;">激活</button>
+							<button id="confirmBtn" class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmActive()" style="background-color: #FF4040;border:0;">激活</button>
 						</div>
 					</div>
 				</div>
