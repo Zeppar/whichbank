@@ -497,7 +497,7 @@ router.post('/active', function(req, res) {
 			"message": "请先进行注册或登录操作"
 		});
 	}
-	connection.query(userSQL.getCodeByPhone, [req.session.user.phone], function(error, results) {
+	connection.query(userSQL.getAccodeByPhone, [req.session.user.phone], function(error, results) {
 		if(error) {
 			throw error;
 		} else {
