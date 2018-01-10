@@ -41,28 +41,14 @@
 				// todo 
 			});
 
-			function checkInfo(data) {
-
-				if(data.username.trim().length == 0) {
-					util.toast('请输入正确的用户名', '', 'error');
-					return false;
-				}
-				if(data.password.trim().length == 0) {
-					util.toast('请输入正确的密码', '', 'error');
-					return false;
-				}
-
-				return true
-			}
-
 			function sendRequest(request) {
 				var loading = $('<div class="mui-toast-container mui-active js-toast-loading"><div class="mui-toast-message"><div class="mui-toast-icon"><span class="fa fa-spinner fa-spin"></span></div>请求中</div></div>');
 				document.body.appendChild(loading[0]);
 				$.ajax({
-					type: "POST",
+					type: "GET",
 					timeout: 10000,
+					async: false,
 					url: request.url,
-					data: request.data,
 					dataType: "json",
 					success: function(res) {
 						console.log("res : " + res["status"]);
@@ -86,45 +72,48 @@
 			}
 
 			function confirmCreate() {
+				if($("#phone").val().trim().length == 0) {
+					return util.toast("请输入手机号", '', 'error');
+				}
 				var data = {
-
+					phone: $("#phone").val().trim()
 				};
 				createCode(data);
 			}
 
 			function createCode(data) {
-				var loginDt = {
-					url: "/accode/create",
+				var acdt = {
+					url: "/users/getAccode?phone=" + data.phone,
 					data: data,
 					successCallback: function(data) {
 						//do nothing
 						$('#code').val(data["code"]);
-						var option = {
-							'showElement': $('#createBtn'),
-							'showTips': "%s秒后重新生成",
-							'btnTips': '<button id="createBtn" class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmCreate()" style="background-color: #FF4040;border:0;">生成激活码</button>'
-						};
-						confirmBtnUI(option, 5);
+//						var option = {
+//							'showElement': $('#createBtn'),
+//							'showTips': "%s秒后重新获取",
+//							'btnTips': '<button id="createBtn" class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmCreate()" style="background-color: #FF4040;border:0;">生成激活码</button>'
+//						};
+//						confirmBtnUI(option, 5);
 					}
 				}
-				sendRequest(loginDt);
+				sendRequest(acdt);
 			}
 
-			function confirmBtnUI(option, sec) {
-				option.showElement.html(option.showTips.replace("%s", sec));
-				option.showElement.attr('disabled', true);
-				var timer = setInterval(function() {
-					sec--;
-					if(sec <= 0) {
-						clearInterval(timer);
-						sec = 60;
-						option.showElement.html(option.btnTips);
-						option.showElement.attr('disabled', false);
-					} else {
-						option.showElement.html(option.showTips.replace("%s", sec));
-					}
-				}, 1000);
-			}
+//			function confirmBtnUI(option, sec) {
+//				option.showElement.html(option.showTips.replace("%s", sec));
+//				option.showElement.attr('disabled', true);
+//				var timer = setInterval(function() {
+//					sec--;
+//					if(sec <= 0) {
+//						clearInterval(timer);
+//						sec = 60;
+//						option.showElement.html(option.btnTips);
+//						option.showElement.attr('disabled', false);
+//					} else {
+//						option.showElement.html(option.showTips.replace("%s", sec));
+//					}
+//				}, 1000);
+//			}
 		</script>
 	</head>
 
@@ -140,13 +129,17 @@
 					<div class="js-sendcode">
 						<div class="mui-input-group mui-mt15">
 							<div class="mui-input-row">
-								<input name="code" id="code" class="en" type="text" placeholder="点击生成激活码" disabled="true" style="color: black;" />
+								<input name="phone" id="phone" class="en" type="text" placeholder="请输入手机号" style="color: black;" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
 							</div>
 						</div>
-
+						<div class="mui-input-group mui-mt15">
+							<div class="mui-input-row">
+								<input name="code" id="code" class="en" type="text" placeholder="点击获取激活码" disabled="true" style="color: black;" />
+							</div>
+						</div>
 						<div class="mui-text-center" style="margin-top:25px ">
 							<button id="createBtn" class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmCreate()" style="background-color: #FF4040;border:0;">
-                    生成激活码
+                    获取激活码
                 </button>
 						</div>
 					</div>

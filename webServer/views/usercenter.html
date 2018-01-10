@@ -21,6 +21,12 @@
 		<script src="/javascripts/jquery-1.10.2.min.js"></script>
 		<script type="text/javascript" src="/javascripts/jquery.qrcode.min.js"></script>
 
+		<script src="/javascripts/jquery.knob.js"></script>
+		<script src="/javascripts/jquery.throttle.js"></script>
+		<script src="/javascripts/jquery.classycountdown.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="/stylesheets/jquery.classycountdown.css" />
+
 		<link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet">
 		<link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet">
 		<link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
@@ -88,6 +94,21 @@
 					background-position: 1px 10px;
 					background-size: 9px auto;
 				}
+				
+				.countDownClass {
+					margin: 0 auto 30px auto;
+					max-width: 400px;
+					width: 100%;
+					padding: 30px;
+					padding-top: 15px;
+					padding-bottom: 0;
+					display: block;
+					width: 400px;
+					position: fixed;
+					bottom: 0;
+					left: 50%;
+					margin-left: -200px;
+				}
 			</style>
 
 			<div class="mui-content mc-login" style="padding-bottom: 15px;">
@@ -112,21 +133,51 @@
 				<div class="panles" style="height: auto!important; text-align:center">
 					<img id="qrcode" src="/qrcode/show" style="margin: 0px;padding: 0;"></img>
 				</div>
-				<div class="panles" style="height: 40px; text-align:center">
+				<!--<div class="panles" style="height: 40px; text-align:center;">
 					<label style="color: #868686;font-size: 12px;" id="currentTime"></label>
-				</div>
+				</div>-->
+				<div id="countdown" class="countDownClass"></div>
 			</div>
 			<script type="text/javascript">
 				$(function() {
-					clock();
-					setInterval("clock()", 1000)
+					//					clock();
+					//					setInterval("clock()", 1000)
+					$.ajax({
+						type: "GET",
+						timeout: 10000,
+						async: false,
+						url: "/users/getRemainTime",
+						dataType: "json",
+						success: function(res) {
+							console.log("res : " + res["status"]);
+							if(res['status'] != 1) {
+								return util.toast(res['message'], '', 'error');
+							} else {
+								$('#countdown').ClassyCountdown({
+									theme: "flat-colors-black",
+									end: $.now() + res["remain"]/1000
+								});
+							}
+						},
+						error: function(XMLHttpRequest, status) {
+							if(status == 'timeout') {
+								util.toast('请求超时，请稍后再试', '', 'error');
+							} else {
+								util.toast('请求失败，请稍后再试', '', 'error');
+							}
+						},
+						complete: function() {
+							loading.remove()
+						}
+					});
+
 				});
 
-				function clock() {
-					var d = new Date()
-					document.getElementById("currentTime").innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate()
-					+ "日 " + d.getHours() + ":" + (d.getMinutes() > 9 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (d.getSeconds() > 9 ? d.getSeconds() : "0" + d.getSeconds());
-				}
+				//				function clock() {
+				//					var d = new Date()
+				//					document.getElementById("currentTime").innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() +
+				//						"日 " + d.getHours() + ":" + (d.getMinutes() > 9 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (d.getSeconds() > 9 ? d.getSeconds() : "0" + d.getSeconds());
+				//				}
 			</script>
 	</body>
 

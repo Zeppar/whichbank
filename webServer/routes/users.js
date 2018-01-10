@@ -130,13 +130,45 @@ router.get('/adminLogin', function(req, res, next) {
 	res.render('mgrLogin');
 });
 
+//get remain actime
+router.get('/getRemainTime', function(req, res, next) {
+	//	var userid = req.session.user.userid;
+	var userid = 'oXhLlv23xRixaGAoRWqaOBDGoiVU';
+	if(userid != null) {
+		connection.query(userSQL.getUserByUserId, [userid], function(error, results) {
+			if(error) {
+				throw error;
+			} else {
+				if(results.length != 0) {
+					var timelimit = new Date(); //实例化一个Date对象  
+					timelimit.setTime(results[0].actime);
+					console.log(timelimit.getFullYear());
+					// 获取的是timestamp
+					var ts = timelimit.setFullYear(timelimit.getFullYear() + 1);
+					var time = ts - new Date().getTime();
+					console.log("time : " + time);
+					res.json({
+						"status": 1,
+						"message": "获取时间成功",
+						"remain": time
+					});
+				} else {
+					res.json({
+						"status": 0,
+						"message": "暂无该账号信息"
+					});
+				}
+			}
+		});
+	}
+});
+
 router.get("/usercenter", function(req, res) {
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/findDir&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
 router.get("/findDir", function(req, res) {
 	var param = req.query || req.params;
-	// get access token by code and store it
 	var code = param.code;
 	if(code != null) {
 		var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
@@ -171,7 +203,8 @@ router.get("/findDir", function(req, res) {
 												'username': results[0].name,
 												'idnumber': results[0].idnumber,
 												'userid': results[0].userid,
-												'acstatus': results[0].acstatus
+												'acstatus': results[0].acstatus,
+												'actime': results[0].actime
 											};
 											req.session.user = user;
 											if(req.session.user.acstatus != 0) {
@@ -394,7 +427,6 @@ router.post('/register', function(req, res) {
 				} else {
 					if(code == req.body.code) {
 						//	find in database
-						//						console.log("wechatAssess.openid : " + wechatAssess.openid);
 						connection.query(userSQL.getUserByUserId, [req.session.wechatAssess.openid], function(error, results) {
 							if(error) {
 								throw error;
@@ -407,12 +439,10 @@ router.post('/register', function(req, res) {
 										"message": "当前微信号已注册"
 									});
 								} else {
-									// console.log("start register");
-									// 直接返回数据
-									// res.json({"status":1});
 									//add
-									console.log('start reg : ' + req.session.wechatAssess.openid);
-									connection.query(userSQL.insert, [req.session.wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0], function(err, results) {
+									var timestamp = new Date().getTime();
+									var accode = createACCode(6);
+									connection.query(userSQL.insert, [req.session.wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0, timestamp, 0, accode], function(err, results) {
 										if(error) {
 											throw error;
 										} else {
@@ -430,7 +460,6 @@ router.post('/register', function(req, res) {
 												'idnumber': req.body.idnumber,
 												'userid': req.session.wechatAssess.openid,
 												'acstatus': 0
-
 											};
 											req.session.user = user;
 											res.json({
@@ -460,7 +489,7 @@ router.post('/register', function(req, res) {
 	});
 });
 
-// 用户激活
+// 用户激活  -- todo
 router.post('/active', function(req, res) {
 	if(!req.session.user) {
 		res.json({
@@ -468,8 +497,127 @@ router.post('/active', function(req, res) {
 			"message": "请先进行注册或登录操作"
 		});
 	}
+	connection.query(userSQL.getCodeByPhone, [req.session.user.phone], function(error, results) {
+		if(error) {
+			throw error;
+		} else {
+			if(results.length != 0) {
+				if(results[0].status == 0) {
+					// 0 inact 1 sale 2 wechat
+					if(req.body.code == results[0].accode) {
+
+						connection.query(userSQL.getRealInfoByPhone, [req.session.user.phone], function(err, results) {
+							if(error) {
+								throw error;
+							} else {
+								if(results.length == 0) {
+									var timestamp = new Date().getTime();
+									connection.query(userSQL.activeUserByUserid, [1, timestamp, req.session.user.userid], function(error, results) {
+										if(error) {
+											throw error;
+										} else {
+											//save to other server
+											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
+											console.log("reqUrl : " + reqUrl);
+											request(reqUrl, function(error, response, body) {
+												console.log("response.statusCode : " + response.statusCode);
+												if(!error && response.statusCode == 200) {
+													console.log(body);
+													if(body.startsWith('Y')) {
+														console.log("成功");
+														req.session.user.acstatus = 1;
+														res.json({
+															"status": 1,
+															"message": "激活成功",
+															"url": "/users/usercenter"
+														});
+													} else {
+														console.log("失败");
+														res.json({
+															"status": -1,
+															"message": "激活失败"
+														});
+													}
+												} else {
+													console.log('error');
+													res.json({
+														"status": -1,
+														"message": "激活失败"
+													});
+												}
+											});
+										}
+									});
+								} else {
+									connection.query(userSQL.getBatchTime, [results[0].batch], function(err, results) {
+										if(error) {
+											throw error;
+										} else {
+											var timestamp = results[0].actime;
+											connection.query(userSQL.activeUserByUserid, [1, timestamp, req.session.user.userid], function(error, results) {
+												if(error) {
+													throw error;
+												} else {
+													//save to other server
+													var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
+													console.log("reqUrl : " + reqUrl);
+													request(reqUrl, function(error, response, body) {
+														console.log("response.statusCode : " + response.statusCode);
+														if(!error && response.statusCode == 200) {
+															console.log(body);
+															if(body.startsWith('Y')) {
+																console.log("成功");
+																req.session.user.acstatus = 1;
+																res.json({
+																	"status": 1,
+																	"message": "激活成功",
+																	"url": "/users/usercenter"
+																});
+															} else {
+																console.log("失败");
+																res.json({
+																	"status": -1,
+																	"message": "激活失败"
+																});
+															}
+														} else {
+															console.log('error');
+															res.json({
+																"status": -1,
+																"message": "激活失败"
+															});
+														}
+													});
+												}
+											});
+										}
+									});
+								}
+							}
+						});
+
+					} else {
+						res.json({
+							"status": 0,
+							"message": "激活码错误"
+						});
+					}
+				} else {
+					res.json({
+						"status": 0,
+						"message": "该用户已激活"
+					});
+				}
+			} else {
+				res.json({
+					"status": 0,
+					"message": "未找到当前用户"
+				});
+			}
+		}
+	});
 	// judge code exist
-	connection.query(activeSQL.getCode, [req.body.code], function(error, results) {
+	/*connection.query(activeSQL.getCode, [req.body.code], function(error, results) {
 		if(error) {
 			throw error;
 		} else {
@@ -477,7 +625,8 @@ router.post('/active', function(req, res) {
 				// find code
 				if(results[0].status == 0) {
 					// 0 inact 1 sale 2 wechat
-					connection.query(userSQL.activeUserByUserid, [1, req.session.user.userid], function(error, results) {
+					var timestamp = new Date().getTime();
+					connection.query(userSQL.activeUserByUserid, [1, timestamp, req.session.user.userid], function(error, results) {
 						if(error) {
 							throw error;
 						} else {
@@ -534,7 +683,7 @@ router.post('/active', function(req, res) {
 				});
 			}
 		}
-	});
+	});*/
 });
 
 router.post('/adminLogin', function(req, res) {
@@ -571,15 +720,13 @@ router.post('/adminLogin', function(req, res) {
 	});
 });
 
-// ******************************** 
-// user import  -- used by manager
-//router.get('/import', function(req, res, next) {
-//	res.render('import');
-//});
-// ********************************
+//import --used by manager
+router.get('/import', function(req, res, next) {
+	res.render('import');
+});
 
 router.post('/import', function(req, res) {
-	/*var form = formidable.IncomingForm({
+	var form = formidable.IncomingForm({
 		encoding: 'utf-8', //上传编码
 		uploadDir: "public/excels", //上传目录，指的是服务器的路径，如果不存在将会报错。
 		keepExtensions: true, //保留后缀
@@ -587,6 +734,7 @@ router.post('/import', function(req, res) {
 	});
 	var allFile = [];
 	var allFile = [];
+
 	form.on('progress', function(bytesReceived, bytesExpected) { //在控制台打印文件上传进度
 			var progressInfo = {
 				value: bytesReceived,
@@ -598,8 +746,7 @@ router.post('/import', function(req, res) {
 		.on('file', function(filed, file) {
 			allFile.push([filed, file]); //收集传过来的所有文件
 		})
-		.on('end', function() {
-		})
+		.on('end', function() {})
 		.on('error', function(err) {
 			console.error('上传失败：', err.message);
 			next(err);
@@ -619,18 +766,69 @@ router.post('/import', function(req, res) {
 				var ms = Date.parse(date);
 				var savePath = form.uploadDir + "/" + types[0] + "." + String(types[types.length - 1]);
 				fs.renameSync(file[1].path, savePath); //重命名文件，默认的文件名是带有一串编码的，我们要把它还原为它原先的名字。
-				ExcelParse(savePath);
+				ExcelParse(savePath, currentBatch);
 			});
 			res.json({
 				"status": 1,
 				"message": "上传成功"
 			});
-		});*/
-	res.json({
-		"status": 0,
-		"message": "暂无此功能"
-	});
+		});
 });
+
+var currentBatch = 0;
+router.get("/judgeBatch", function(req, res, next) {
+	var param = req.query || req.params;
+	// get access token by code and store it
+	var batch = param.batch;
+	if(batch != undefined) {
+		connection.query(userSQL.getRealInfoByBatch, [batch], function(error, results) {
+			if(error) {
+				throw error;
+			} else {
+				console.log(results);
+				if(results.length != 0) {
+					res.json({
+						"status": 0,
+						"message": "批次重复"
+					});
+				} else {
+					currentBatch = batch;
+					res.json({
+						"status": 1,
+						"message": "添加批次成功"
+					});
+				}
+			}
+		});
+	} else {
+		res.json({
+			"status": 0,
+			"message": "参数错误"
+		});
+	}
+});
+
+function RandomNum(Min, Max) {      
+	var Range = Max - Min;      
+	var Rand = Math.random();      
+	var num = Min + Math.round(Rand * Range);      
+	return num;
+}
+
+function createACCode(_idx) {
+	var str = '';
+	for(var i = 0; i < _idx; i += 1) {
+		var t = Math.floor(Math.random() * 10);
+		//		if(t >= 0 && t < 3) {
+		//			str += String.fromCharCode(RandomNum(65, 90));
+		//		} else if(t >= 3 && t < 6) {
+		//			str += String.fromCharCode(RandomNum(97, 122));
+		//		} else if(t >= 6 && t <= 9) {
+		str += String.fromCharCode(RandomNum(48, 57));
+		//		}
+	}
+	return str;
+}
 
 function contains(arr, obj) {
 	for(var i = 0; i < arr.length; i++) {
@@ -641,13 +839,13 @@ function contains(arr, obj) {
 	return false;
 }
 
-var ExcelParse = function(newPath) {
+var ExcelParse = function(newPath, batch) {
 	console.log("ExcelParse");
 	var obj = node_xlsx.parse(newPath);
 	var excelObj = obj[0].data; //取得第一个excel表的数据  
 
 	//循环遍历表每一行的数据  
-	var sqlOperation = "INSERT INTO UserRealInfo (name, idnumber, phone, cardid) VALUES ";
+	var sqlOperation = "INSERT INTO UserRealInfo (name, idnumber, phone, cardid, batch) VALUES ";
 	var list = new Array();
 	var findNew = false;
 	connection.query(userSQL.getRealInfo, function(error, results) {
@@ -670,19 +868,15 @@ var ExcelParse = function(newPath) {
 					findNew = true;
 					var str = "(";
 					for(var j = 1; j < rdata.length; j++) {
-						str += ('"' + rdata[j].toString().trim() + '"');
-						if(j != rdata.length - 1)
-							str += ",";
-						else
-							str += ")";
+						str += ('"' + rdata[j].toString().trim() + '",');
 					}
+					str += (batch + ")");
 					str += ","
 					sqlOperation += str;
 				}
 			}
 			if(findNew) {
 				sqlOperation = sqlOperation.substring(0, sqlOperation.length - 1);
-				console.log(sqlOperation);
 				connection.query(sqlOperation, function(error, results) {
 					if(error) {
 						throw error;
@@ -694,5 +888,29 @@ var ExcelParse = function(newPath) {
 		}
 	});
 };
+
+// get code
+router.get('/getAccode', function(req, res, next) {
+	var param = req.query || req.params;
+	var phone = param.phone;
+	connection.query(userSQL.getAccodeByPhone, [phone], function(error, results) {
+		if(error) {
+			throw error;
+		} else {
+			if(results.length == 0) {
+				res.json({
+					"status": 0,
+					"message": "未找到该用户"
+				});
+			} else {
+				res.json({
+					"status": 1,
+					"message": "查找激活码成功",
+					"code": results[0].accode
+				})
+			}
+		}
+	});
+});
 
 module.exports = router;

@@ -47,31 +47,60 @@
 			});
 
 			function confirmImport() {
-				var formData = new FormData();;
 				if($("#myfile")[0].files.length == 0) {
 					return util.toast('请选择需要上传的文件', '', 'error');
 				}
-				formData.append("file", $("#myfile")[0].files[0]);
+				if($("#batch").val().trim().length == 0) {
+					return util.toast('请输入要上传的批次', '', 'error');
+				}
+				// judge batch exist
 				$.ajax({
-					url: '/users/import',
-					type: 'POST',
-					data: formData,
-					// 告诉jQuery不要去处理发送的数据
-					processData: false,
-					// 告诉jQuery不要去设置Content-Type请求头
-					contentType: false,
-					beforeSend: function() {
-						console.log("正在进行，请稍候");
-					},
+					type: "GET",
+					timeout: 10000,
+					async: false,
+					url: "/users/judgeBatch?batch=" + $("#batch").val().trim(),
+					dataType: "json",
 					success: function(res) {
+						console.log("res : " + res["status"]);
 						if(res['status'] != 1) {
 							return util.toast(res['message'], '', 'error');
 						} else {
-							return util.toast(res['message'], '');
+							// start add excel
+							var formData = new FormData();
+							formData.append("file", $("#myfile")[0].files[0]);
+							$.ajax({
+								url: '/users/import',
+								type: 'POST',
+								data: formData,
+								// 告诉jQuery不要去处理发送的数据
+								processData: false,
+								// 告诉jQuery不要去设置Content-Type请求头
+								contentType: false,
+								beforeSend: function() {
+									console.log("正在进行，请稍候");
+								},
+								success: function(res) {
+									if(res['status'] != 1) {
+										return util.toast(res['message'], '', 'error');
+									} else {
+										return util.toast(res['message'], '');
+									}
+								},
+								error: function(responseStr) {
+									console.log("error");
+								}
+							});
 						}
 					},
-					error: function(responseStr) {
-						console.log("error");
+					error: function(XMLHttpRequest, status) {
+						if(status == 'timeout') {
+							util.toast('请求超时，请稍后再试', '', 'error');
+						} else {
+							util.toast('请求失败，请稍后再试', '', 'error');
+						}
+					},
+					complete: function() {
+						loading.remove()
 					}
 				});
 			}
@@ -91,18 +120,15 @@
 						<div class="mui-input-group mui-mt15">
 							<div class="mui-input-row">
 								<label id="fileLabel" style="color: #868686;position: absolute;width: 100%;">请选择要上传的文件</label>
-
-								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-									<input type="file" id="myfile" name="myfile" style="width: 100%;opacity: 0;" />
-								</div>
-								<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-									<input type="file" id="myfile" name="myfile" style="width: 100%;opacity: 0;" />
-								</div>
+								<input type="file" id="myfile" name="myfile" style="width: 100%;opacity: 0;" />
+							</div>
+							<div class="mui-input-row">
+								<input type="text" id="batch" name="batch" style="width: 100%;" placeholder="请输入当前批次" />
 							</div>
 						</div>
 
 						<div class="mui-text-center" style="margin-top:25px ">
-							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmImport()" style="background-color: #FF4040;border:0;">激活</button>
+							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmImport()" style="background-color: #FF4040;border:0;">开始导入</button>
 						</div>
 					</div>
 				</div>
