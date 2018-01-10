@@ -502,10 +502,9 @@ router.post('/active', function(req, res) {
 			throw error;
 		} else {
 			if(results.length != 0) {
-				if(results[0].status == 0) {
+				if(results[0].acstatus == 0) {
 					// 0 inact 1 sale 2 wechat
 					if(req.body.code == results[0].accode) {
-
 						connection.query(userSQL.getRealInfoByPhone, [req.session.user.phone], function(err, results) {
 							if(error) {
 								throw error;
