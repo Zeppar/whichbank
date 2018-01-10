@@ -132,8 +132,7 @@ router.get('/adminLogin', function(req, res, next) {
 
 //get remain actime
 router.get('/getRemainTime', function(req, res, next) {
-	//	var userid = req.session.user.userid;
-	var userid = 'oXhLlv23xRixaGAoRWqaOBDGoiVU';
+	var userid = req.session.user.userid;
 	if(userid != null) {
 		connection.query(userSQL.getUserByUserId, [userid], function(error, results) {
 			if(error) {
