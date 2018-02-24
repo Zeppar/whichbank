@@ -133,20 +133,19 @@
 				<div class="panles" style="height: auto!important; text-align:center">
 					<img id="qrcode" src="/qrcode/show" style="margin: 0px;padding: 0;"></img>
 				</div>
-				<!--<div class="panles" style="height: 40px; text-align:center;">
+				<div class="panles" style="height: 40px; text-align:center;">
 					<label style="color: #868686;font-size: 12px;" id="currentTime"></label>
-				</div>-->
-				<div id="countdown" class="countDownClass" style="align-content: center;text-align: center;">
-					<strong style="color: #FF6347;">会员权益剩余时间</strong>
 				</div>
+				<!--<div id="countdown" class="countDownClass" style="align-content: center;text-align: center;">
+					<strong style="color: #FF6347;">会员权益剩余时间</strong>
+				</div>-->
 				<div>
 					
 				</div>
 			</div>
 			<script type="text/javascript">
+				var timestamp = 0;
 				$(function() {
-					//					clock();
-					//					setInterval("clock()", 1000)
 					$.ajax({
 						type: "GET",
 						timeout: 10000,
@@ -158,10 +157,14 @@
 							if(res['status'] != 1) {
 								return util.toast(res['message'], '', 'error');
 							} else {
-								$('#countdown').ClassyCountdown({
+								/*$('#countdown').ClassyCountdown({
 									theme: "flat-colors-black",
 									end: $.now() + res["remain"]/1000
-								});
+								});*/
+								// change to set time string
+								timestamp = res["remain"];
+								clock();
+								setInterval("clock()", 1000)		
 							}
 						},
 						error: function(XMLHttpRequest, status) {
@@ -178,11 +181,12 @@
 
 				});
 
-				//				function clock() {
-				//					var d = new Date()
-				//					document.getElementById("currentTime").innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() +
-				//						"日 " + d.getHours() + ":" + (d.getMinutes() > 9 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (d.getSeconds() > 9 ? d.getSeconds() : "0" + d.getSeconds());
-				//				}
+				function clock() {
+					var d = new Date(timestamp)
+					document.getElementById("currentTime").innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() +
+						"日 " + d.getHours() + ":" + (d.getMinutes() > 9 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (d.getSeconds() > 9 ? d.getSeconds() : "0" + d.getSeconds());
+					timestamp = timestamp - 1000;
+				}
 			</script>
 	</body>
 
