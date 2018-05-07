@@ -55,12 +55,13 @@ router.post('/faceDetect', function(req, res) {
 				consloe.log(reaPath + ' not exists.');
 			} else {
 				//do something
+				console.log("1");
 				var data = {
 					name: req.session.user.username,
 					idnumber: req.session.user.idnumber,
 					video_file: fs.createReadStream(path)
 				}
-
+				console.log("2");
 				request.post({
 					url: 'https://v2-auth-api.visioncloudapi.com/identity/silent_idnumber_verification/stateless',
 					formData: data,
@@ -68,20 +69,26 @@ router.post('/faceDetect', function(req, res) {
 						"Authorization": auth
 					}
 				}, function(err, httpResponse, body) {
+					console.log("3");
 					if(err) {
 						return console.error('upload failed:', err);
 					}
 					console.log('successful!  Server responded with:', body);
 					var obj = JSON.parse(body);
 					if(obj.message != undefined) {
+						console.log("4");
 						res.json({
 							"status": -1,
 							"message": "验证失败"
 						});
 					} else {
+						console.log("5");
 						if(obj.passed) {
+							console.log("6");
 							var userid = req.session.user.userid;
 							var faceid = obj.image_id;
+							console.log(userid);
+							console.log(faceid);
 							connection.query(userSQL.setUserFaceID, [faceid, userid], function(error, results) {
 								if(error) {
 									throw error;
@@ -95,6 +102,7 @@ router.post('/faceDetect', function(req, res) {
 								}
 							});
 						} else {
+							console.log("7");
 							res.json({
 								"status": -1,
 								"message": "验证失败"
