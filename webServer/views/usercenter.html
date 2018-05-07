@@ -111,7 +111,7 @@
 				}
 				
 				.ii {
-					display: none;
+					/*display: none;*/
 					background: red;
 					/*background-image: url("/images/face.png");*/
 					width: 20px;
@@ -122,6 +122,7 @@
 					text-align: center;
 					color: #FFF;
 					z-index: 99999;
+					visibility: hidden;
 				}
 			</style>
 
@@ -187,14 +188,10 @@
 							if(res['status'] != 1) {
 								return util.toast(res['message'], '', 'error');
 							} else {
-								/*$('#countdown').ClassyCountdown({
-									theme: "flat-colors-black",
-									end: $.now() + res["remain"]/1000
-								});*/
 								// change to set time string
 								timestamp = res["remain"];
 								if(res["faceid"] != "")
-									document.getElementById("msgNum").style.display="";
+									document.getElementById("msgNum").style.visibility = "visible"
 								clock();
 								setInterval("clock()", 1000)
 							}
