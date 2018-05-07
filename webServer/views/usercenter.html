@@ -109,6 +109,20 @@
 					left: 50%;
 					margin-left: -200px;
 				}
+				
+				.ii {
+					display: none;
+					background-image: url(../public/images/face.png);
+					border-radius: 50%;
+					width: 20px;
+					height: 20px;
+					top: -8px;
+					right: -8px;
+					position: absolute;
+					text-align: center;
+					color: #FFF;
+					z-index: 99999;
+				}
 			</style>
 
 			<div class="mui-content mc-login" style="padding-bottom: 15px;">
@@ -126,7 +140,11 @@
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top: 10px;padding: 0;"><span><%=phone%></span></div>
 						</div>
 						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3" style="height: 100px;padding-right: 0;">
-							<img src="<%=icon%>" style="width: 80px;height: 80px;margin-top: 10px;margin-left: -20px;">
+							<div style="width: 80px;height: 80px;margin-top: 10px;margin-left: -20px;position: relative;">
+								<img src="<%=icon%>" style="width: 100%;height: 100%;">
+								<span id="msgNum" class="ii"></span>
+							</div>
+
 						</div>
 					</div>
 				</div>
@@ -135,30 +153,34 @@
 				</div>
 				<div class="panles" style="height: 60px; text-align:center;">
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<span style="color: #868686;font-size: 12px;">会员权益剩余时间</span>
+						<span style="color: #868686;font-size: 12px;">会员权益剩余时间</span>
 					</div>
 					<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<span style="font-size: 10px;" id="currentTime"></span>
+						<span style="font-size: 10px;" id="currentTime"></span>
 					</div>
 				</div>
-				<!--<div id="countdown" class="countDownClass" style="align-content: center;text-align: center;">
-					<strong style="color: #FF6347;">会员权益剩余时间</strong>
-				</div>-->
+				<div class="mui-text-center" style="margin: 0 15px; margin-top: 10px;">
+					<form id="faceDetectForm" action="/identity/faceDetect" method="get">
+						<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="enterFaceDetect()" style="background-color: #FF4040;border:0;width: 100%;">
+                   		人脸识别
+                			</button>
+					</form>
+				</div>
 				<div>
-					
+
 				</div>
 			</div>
 			<script type="text/javascript">
 				var timestamp = 0;
-//				timestamp = 125 * 24 * 60 * 60 * 1000;
-//				clock();
-//				setInterval("clock()", 1000)
+				//				timestamp = 125 * 24 * 60 * 60 * 1000;
+				//				clock();
+				//				setInterval("clock()", 1000)
 				$(function() {
 					$.ajax({
 						type: "GET",
 						timeout: 10000,
 						async: false,
-						url: "/users/getRemainTime",
+						url: "/users/getRemainTimeAndFaceID",
 						dataType: "json",
 						success: function(res) {
 							console.log("res : " + res["status"]);
@@ -171,8 +193,10 @@
 								});*/
 								// change to set time string
 								timestamp = res["remain"];
+								if(res["faceid"] != "")
+									document.getElementsByClassName("ii").setAttribute('display','');
 								clock();
-								setInterval("clock()", 1000)		
+								setInterval("clock()", 1000)
 							}
 						},
 						error: function(XMLHttpRequest, status) {
@@ -189,8 +213,12 @@
 
 				});
 
+				function enterFaceDetect() {
+					document.getElementById("faceDetectForm").submit();
+				}
+
 				function clock() {
-//					var d = new Date(timestamp)
+					//					var d = new Date(timestamp)
 					var remain = 0;
 					var day = parseInt(timestamp / (1000 * 60 * 60 * 24));
 					remain = timestamp - day * (1000 * 60 * 60 * 24);
@@ -199,11 +227,11 @@
 					var minute = parseInt(remain / (1000 * 60));
 					remain = remain - minute * (1000 * 60);
 					var second = parseInt(remain / 1000);
-					document.getElementById("currentTime").innerText = day + "天" + hour + "小时" + minute + "分钟" + second + "秒"; 
-//					document.getElementById("currentTime").innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() +
-//						"日 " + d.getHours() + ":" + (d.getMinutes() > 9 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (d.getSeconds() > 9 ? d.getSeconds() : "0" + d.getSeconds());
+					document.getElementById("currentTime").innerText = day + "天" + hour + "小时" + minute + "分钟" + second + "秒";
+					//					document.getElementById("currentTime").innerText = d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() +
+					//						"日 " + d.getHours() + ":" + (d.getMinutes() > 9 ? d.getMinutes() : "0" + d.getMinutes()) + ":" + (d.getSeconds() > 9 ? d.getSeconds() : "0" + d.getSeconds());
 					timestamp = timestamp - 1000;
-//					console.log(timestamp);
+					//					console.log(timestamp);
 				}
 			</script>
 	</body>
