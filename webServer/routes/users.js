@@ -131,7 +131,7 @@ router.get('/adminLogin', function(req, res, next) {
 });
 
 //get remain actime
-router.get('/getRemainTime', function(req, res, next) {
+router.get('/getRemainTimeAndFaceID', function(req, res, next) {
 	var userid = req.session.user.userid;
 	if(userid != null) {
 		connection.query(userSQL.getUserByUserId, [userid], function(error, results) {
@@ -149,7 +149,8 @@ router.get('/getRemainTime', function(req, res, next) {
 					res.json({
 						"status": 1,
 						"message": "获取时间成功",
-						"remain": time
+						"remain": time,
+						"faceid": results[0].faceid
 					});
 				} else {
 					res.json({
@@ -446,7 +447,7 @@ router.post('/register', function(req, res) {
 									//add
 									var timestamp = new Date().getTime();
 									var accode = createACCode(6);
-									connection.query(userSQL.insert, [req.session.wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0, timestamp, 0, accode], function(err, results) {
+									connection.query(userSQL.insert, [req.session.wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0, timestamp, 0, accode, ""], function(err, results) {
 										if(error) {
 											throw error;
 										} else {

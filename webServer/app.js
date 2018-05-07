@@ -8,6 +8,7 @@ var ejs = require('ejs');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var identity = require('./routes/identity');
 var idcode = require('./routes/idcode');
 var qrcode = require('./routes/qrcode');
 var accode = require('./routes/accode');
@@ -39,6 +40,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/identity', identity);
 app.use('/idcode', idcode);
 app.use('/qrcode', qrcode);
 app.use('/accode', accode);
