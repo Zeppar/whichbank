@@ -67,7 +67,7 @@
 			}
 
 			function sendRequest(request) {
-				var loading = $('<div class="mui-toast-container mui-active js-toast-loading"><div class="mui-toast-message"><div class="mui-toast-icon"><span class="fa fa-spinner fa-spin"></span></div>正在识别</div></div>');
+				var loading = $('<div class="mui-toast-container mui-active js-toast-loading"><div class="mui-toast-message"><div class="mui-toast-icon"><span class="fa fa-spinner fa-spin"></span></div>正在识别,请耐心等候</div></div>');
 				document.body.appendChild(loading[0]);
 				$.ajax({
 					type: "POST",
