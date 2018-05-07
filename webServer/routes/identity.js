@@ -56,8 +56,8 @@ router.post('/faceDetect', function(req, res) {
 			} else {
 				//do something
 				var data = {
-					name: "董硕",
-					idnumber: "370212199309261518",
+					name: req.session.user.username,
+					idnumber: req.session.user.idnumber,
 					video_file: fs.createReadStream(path)
 				}
 
@@ -87,6 +87,7 @@ router.post('/faceDetect', function(req, res) {
 									throw error;
 								} else {
 									console.log(results);
+									console.log((obj.verification_score * 100).toFixed(2));
 									res.json({
 										"status": 1,
 										"message": "验证成功, 相似度" + (obj.verification_score * 100).toFixed(2)
