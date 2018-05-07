@@ -146,6 +146,7 @@ router.get('/getRemainTimeAndFaceID', function(req, res, next) {
 					var ts = timelimit.setFullYear(timelimit.getFullYear() + 1);
 					var time = ts - new Date().getTime();
 					console.log("time : " + time);
+					console.log("face : " + results[0].faceid);
 					res.json({
 						"status": 1,
 						"message": "获取时间成功",
