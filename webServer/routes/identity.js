@@ -60,6 +60,8 @@ router.post('/faceDetect', function(req, res) {
 					idnumber: req.session.user.idnumber,
 					video_file: fs.createReadStream(path)
 				}
+				console.log(req.session.user.username);
+				console.log(req.session.user.idnumber);
 				request.post({
 					url: 'https://v2-auth-api.visioncloudapi.com/identity/silent_idnumber_verification/stateless',
 					formData: data,
