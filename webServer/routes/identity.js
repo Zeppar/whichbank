@@ -21,9 +21,68 @@ var connection = mysql.createConnection({
 });
 
 router.get('/faceDetect', function(req, res, next) {
-	//	if(req.session.user != null && req.session.user != undefined) {
-	res.render("faceDetect");
-	//	}
+	if(req.session.user != null && req.session.user != undefined) {
+		res.render("faceDetect");
+	} else {
+		res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/identity/findDir&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
+	}
+});
+
+router.get("/findDir", function(req, res) {
+	var param = req.query || req.params;
+	var code = param.code;
+	if(code != null) {
+		var reqAccessUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx99de7fe83e043204&secret=a887a6660a57550ea169f64e55d0c81f&code=' + code + '&grant_type=authorization_code';
+		request(reqAccessUrl, function(error, response, body) {
+			if(!error && response.statusCode == 200) {
+				console.log("console body :" + body);
+				//store access token
+				var obj = JSON.parse(body);
+				if(obj.errcode != undefined) {
+					res.redirect('registergrant');
+				} else {
+					req.session.wechatAssess = obj;
+					var reqUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + obj.access_token + '&openid=' + obj.openid + '&lang=zh_CN';
+					request(reqUserInfoUrl, function(_error, _response, _body) {
+						if(!_error && _response.statusCode == 200) {
+							console.log("console body 2 : " + _body);
+							var user = JSON.parse(_body);
+							if(user.errcode != undefined) {
+								res.redirect('registergrant');
+							} else {
+								// get user info
+								req.session.wechatUserInfo = user;
+								// judge dir
+								connection.query(userSQL.getUserByUserId, [req.session.wechatUserInfo.openid], function(error, results) {
+									if(error) {
+										throw error;
+									} else {
+										if(results.length != 0) {
+											//is register
+											var user = {
+												'phone': results[0].phone,
+												'username': results[0].name,
+												'idnumber': results[0].idnumber,
+												'userid': results[0].userid,
+												'acstatus': results[0].acstatus,
+												'actime': results[0].actime
+											};
+											req.session.user = user;
+											res.render("faceDetect");
+										} else {
+											res.render("register");
+										}
+									}
+								});
+							}
+						}
+					});
+				}
+			}
+		});
+	} else {
+		res.render('register');
+	}
 });
 
 router.post('/faceDetect', function(req, res) {
