@@ -246,6 +246,49 @@ router.post('/faceDetect', function(req, res) {
 												});
 											}
 										});
+									} else {
+										var data = {
+											api_id: ADMIN_API_KEY,
+											api_secret: ADMIN_API_SECRET,
+											name: obj.list[0],
+											selfie_image_id: image_id
+										}
+										request.post({
+											url: 'https://v1-auth-api.visioncloudapi.com/search/image/insert',
+											formData: data
+										}, function(err, httpResponse, body) {
+											if(err) {
+												res.json({
+													"status": -1,
+													"message": "验证失败"
+												});
+												return console.error('list failed:', err);
+											}
+											console.log("insert : " + body);
+											var obj = JSON.parse(body);
+											if(obj.status == "OK") {
+												var userid = req.session.user.userid;
+												var faceid = image_id;
+												connection.query(userSQL.setUserFaceID, [faceid, userid], function(error, results) {
+													if(error) {
+														throw error;
+													} else {
+														console.log(results);
+														console.log((obj.verification_score * 100).toFixed(2));
+														res.json({
+															"status": 1,
+															"message": "验证成功, 相似度" + (obj.verification_score * 100).toFixed(2)
+														});
+
+													}
+												});
+											} else {
+												res.json({
+													"status": -1,
+													"message": "验证失败"
+												});
+											}
+										});
 									}
 								}
 							});
