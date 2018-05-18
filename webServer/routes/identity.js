@@ -147,7 +147,6 @@ router.post('/faceDetect', function(req, res) {
 					var obj = JSON.parse(body);
 					var image_id = obj.image_id;
 					if(obj.message != undefined) {
-						console.log("4");
 						res.json({
 							"status": -1,
 							"message": "验证失败"
@@ -285,7 +284,7 @@ router.post('/adminFaceDetect', function(req, res) {
 						});
 						return console.error('list failed:', err);
 					}
-					console.log("body : " + body);
+					console.log("list : " + body);
 					var obj = JSON.parse(body);
 					if(obj.status != "OK") {
 						res.json({
@@ -312,6 +311,7 @@ router.post('/adminFaceDetect', function(req, res) {
 									});
 									return console.error('list failed:', err);
 								}
+								console.log("create : " + body);
 								var obj = JSON.parse(body);
 								if(obj.status == "OK") {
 									console.log("suc");
@@ -332,7 +332,9 @@ router.post('/adminFaceDetect', function(req, res) {
 											});
 											return console.error('list failed:', err);
 										}
+										console.log()
 										var obj = JSON.parse(body);
+										console.log('search : ' + obj)
 										if(obj.status == "OK") {
 											console.log("suc");
 											// parse all info
@@ -412,6 +414,7 @@ router.post('/adminFaceDetect', function(req, res) {
 									});
 									return console.error('list failed:', err);
 								}
+								console.log(body);
 								var obj = JSON.parse(body);
 								if(obj.status == "OK") {
 									console.log("suc");
