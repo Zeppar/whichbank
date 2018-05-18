@@ -46,11 +46,11 @@
 			});
 
 			function startConfirm() {
-//				if($("#myfile")[0].files.length == 0) {
-//					return util.toast('请选择需要上传的文件', '', 'error');
-//				}
+				if($("#myfile")[0].files.length == 0) {
+					return util.toast('请选择需要上传的文件', '', 'error');
+				}
 				var formData = new FormData();
-//				formData.append("myfile", $("#myfile")[0].files[0]);
+				formData.append("myfile", $("#myfile")[0].files[0]);
 				var faceDt = {
 					url: "/identity/adminFaceDetect",
 					data: formData,
