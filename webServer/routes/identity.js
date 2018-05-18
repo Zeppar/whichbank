@@ -247,6 +247,7 @@ router.post('/faceDetect', function(req, res) {
 											}
 										});
 									} else {
+										console.log("image_id : " + image_id);
 										var data = {
 											api_id: ADMIN_API_KEY,
 											api_secret: ADMIN_API_SECRET,
