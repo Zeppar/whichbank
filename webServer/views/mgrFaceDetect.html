@@ -37,22 +37,52 @@
 			}
 		</style>
 		<script type="text/javascript">
-			$(function() {　　
-				// todo 
+			$(function() {
+				$("#myfile").on('change', function(e) {
+					//e.currentTarget.files 是一个数组，如果支持多个文件，则需要遍历
+					var name = e.currentTarget.files[0].name;
+					$("#fileLabel").text(name);
+				});
 			});
 
+			function startConfirm() {
+//				if($("#myfile")[0].files.length == 0) {
+//					return util.toast('请选择需要上传的文件', '', 'error');
+//				}
+				var formData = new FormData();
+//				formData.append("myfile", $("#myfile")[0].files[0]);
+				var faceDt = {
+					url: "/identity/adminFaceDetect",
+					data: formData,
+					successCallback: function(data) {
+						//do nothing
+						util.toast(data['message'], '');
+					}
+				}
+				sendRequest(faceDt);
+			}
+			
+			function enterActivePage() {
+				document.getElementById("enterActivePageForm").submit();
+			}
+
 			function sendRequest(request) {
-				var loading = $('<div class="mui-toast-container mui-active js-toast-loading"><div class="mui-toast-message"><div class="mui-toast-icon"><span class="fa fa-spinner fa-spin"></span></div>请求中</div></div>');
+				var loading = $('<div class="mui-toast-container mui-active js-toast-loading"><div class="mui-toast-message"><div class="mui-toast-icon"><span class="fa fa-spinner fa-spin"></span></div>正在识别,请耐心等候</div></div>');
 				document.body.appendChild(loading[0]);
 				$.ajax({
-					type: "GET",
-					timeout: 10000,
-					async: false,
+					type: "POST",
+					timeout: 60000,
 					url: request.url,
+					data: request.data,
+					// 告诉jQuery不要去处理发送的数据
+					processData: false,
+					// 告诉jQuery不要去设置Content-Type请求头
+					contentType: false,
 					dataType: "json",
 					success: function(res) {
 						console.log("res : " + res["status"]);
 						if(res['status'] != 1) {
+							$("#confirmBtn").attr("disabled", false);
 							return util.toast(res['message'], '', 'error');
 						} else {
 							request.successCallback(res);
@@ -64,37 +94,12 @@
 						} else {
 							util.toast('请求失败，请稍后再试', '', 'error');
 						}
+						$("#confirmBtn").attr("disabled", false);
 					},
 					complete: function() {
 						loading.remove()
 					}
 				});
-			}
-
-			function confirmCreate() {
-				if($("#phone").val().trim().length == 0) {
-					return util.toast("请输入手机号", '', 'error');
-				}
-				var data = {
-					phone: $("#phone").val().trim()
-				};
-				createCode(data);
-			}
-			
-			function enterFaceDetectPage() {
-				document.getElementById("enterFaceDetectPageForm").submit();
-			}
-
-			function createCode(data) {
-				var acdt = {
-					url: "/users/getAccode?phone=" + data.phone,
-					data: data,
-					successCallback: function(data) {
-						//do nothing
-						$('#code').val(data["code"]);
-					}
-				}
-				sendRequest(acdt);
 			}
 		</script>
 	</head>
@@ -103,31 +108,26 @@
 		<div class="container container-fill">
 			<div class="mui-content mc-login">
 				<div class="avatar mui-text-center">
-					<h1 class="fs_login_h1" style="color:#FF4040">管理员中心</br>
-            <small style="color:#FF6347">Log&nbsp; in</small>
+					<h1 class="fs_login_h1" style="color:#FF4040">人脸验证<br>
+            <small style="color:#FF6347">Face&nbsp; Identity</small>
         </h1>
 				</div>
 				<div class="mui-active mc-login-code" id="login-code">
 					<div class="js-sendcode">
 						<div class="mui-input-group mui-mt15">
 							<div class="mui-input-row">
-								<input name="phone" id="phone" class="en" type="text" placeholder="请输入手机号" style="color: black;" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+								<label id="fileLabel" style="color: #868686;position: absolute;width: 100%;">请选择需要验证的视频</label>
+								<input type="file" id="myfile" name="myfile" style="width: 100%;opacity: 0;" accept="image/*" capture="camera"/>
 							</div>
 						</div>
-						<div class="mui-input-group mui-mt15">
-							<div class="mui-input-row">
-								<input name="code" id="code" class="en" type="text" placeholder="点击获取激活码" disabled="true" style="color: black;" />
-							</div>
-						</div>
+
 						<div class="mui-text-center" style="margin-top:25px ">
-							<button id="createBtn" class="mui-btn mui-btn-success mui-btn-block log-in" onclick="confirmCreate()" style="background-color: #FF4040;border:0;">
-                    获取激活码
-                </button>
+							<button class="mui-btn mui-btn-success mui-btn-block log-in" onclick="startConfirm()" style="background-color: #FF4040;border:0;">开始验证</button>
 						</div>
 						<div class="mui-content-padded">
 							<div class="mui-text-center mui-mt15 small">
-								<form id="enterFaceDetectPageForm" action="/users/adminFaceDetect" method="get">
-									<a onclick="enterFaceDetectPage()"><strong style="color: #FF6347;">进入验证界面</strong></a>
+								<form id="enterActivePageForm" action="/users/adminCenter" method="get">
+									<a onclick="enterActivePage()"><strong style="color: #FF6347;">返回激活页面</strong></a>
 								</form>
 							</div>
 						</div>
@@ -136,3 +136,5 @@
 			</div>
 		</div>
 	</body>
+
+</html>

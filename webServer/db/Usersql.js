@@ -10,6 +10,7 @@ var UserSQL = {
 	getRealInfoByPhone: 'SELECT * FROM UserRealInfo where phone = ?',
 	getAccodeByPhone: 'SELECT * From User where phone = ?',
 	getBatchTime: 'SELECT * From BankAcTime where batch = ?',
-	setUserFaceID: 'UPDATE User SET faceid = ? where userid = ?'
+	setUserFaceID: 'UPDATE User SET faceid = ? where userid = ?',
+	getAllFaceID: "SELECT * From User where faceid <> ''"
 };
 module.exports = UserSQL;
