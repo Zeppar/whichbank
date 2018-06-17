@@ -1,5 +1,5 @@
 var UserSQL = {
-	insert: 'INSERT INTO User(userid,phone,name,idnumber,gender,birthday,acstatus,regtime,actime,accode,faceid) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+	insert: 'INSERT INTO User(userid,phone,name,gender,birthday,acstatus,regtime,actime,accode,faceid) VALUES (?,?,?,?,?,?,?,?,?,?)',
 	queryAll: 'SELECT * FROM User',
 	getUserByPhone: 'SELECT * FROM User WHERE phone = ?',
 	getUserByUserId: 'SELECT * FROM User WHERE userid = ?',

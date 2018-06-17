@@ -67,12 +67,12 @@
 								<input class="mui-text-right" id="name" name="name" type="text" placeholder="" style="color: #868686" />
 							</div>
 						</div>
-						<div class="mui-input-group">
+						<!--<div class="mui-input-group">
 							<div class="mui-input-row">
 								<label for="name" style="color: #868686">身份证号</label>
 								<input class="mui-text-right" id="idnumber" name="idnumber" type="text" placeholder="" style="color: #868686" />
 							</div>
-						</div>
+						</div>-->
 						<div class="mui-input-group" style="margin-bottom: 5px;">
 							<div class="mui-input-row">
 								<label style="color: #868686">性别</label>
@@ -242,10 +242,10 @@
 				return false;
 			}
 
-			if(data.idnumber.trim().length != 18) {
-				util.toast('请输入正确的身份证号', '', 'error');
-				return false;
-			}
+//			if(data.idnumber.trim().length != 18) {
+//				util.toast('请输入正确的身份证号', '', 'error');
+//				return false;
+//			}
 
 			if(data.gender.length == 0) {
 				util.toast('请输入性别', '', 'error');
@@ -310,7 +310,7 @@
 				phone: $('.js-mobile-val').val().trim(),
 				code: $('.vercode').val().trim(),
 				name: $('#name').val().trim(),
-				idnumber: $('#idnumber').val().trim(),
+//				idnumber: $('#idnumber').val().trim(),
 				gender: $('#gender').val(),
 				birthday: $('#birthday').val()
 			};
