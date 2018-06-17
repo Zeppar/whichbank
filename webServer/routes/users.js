@@ -448,7 +448,7 @@ router.post('/register', function(req, res) {
 									//add
 									var timestamp = new Date().getTime();
 									var accode = createACCode(6);
-									connection.query(userSQL.insert, [req.session.wechatAssess.openid, req.body.phone, req.body.name, req.body.idnumber, req.body.gender, req.body.birthday, 0, timestamp, 0, accode, ""], function(err, results) {
+									connection.query(userSQL.insert, [req.session.wechatAssess.openid, req.body.phone, req.body.name, req.body.gender, req.body.birthday, 0, timestamp, 0, accode, ""], function(err, results) {
 										if(error) {
 											throw error;
 										} else {
