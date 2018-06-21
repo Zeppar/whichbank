@@ -165,11 +165,11 @@ router.get('/getRemainTimeAndFaceID', function(req, res, next) {
 });
 
 router.get("/usercenter", function(req, res) {
-//	res.render("usercenter", {
-//													username: 'req.session.user.username',
-//													phone: 'req.session.user.phone',
-//													icon: 'req.session.wechatUserInfo.headimgurl'
-//												});
+	//	res.render("usercenter", {
+	//													username: 'req.session.user.username',
+	//													phone: 'req.session.user.phone',
+	//													icon: 'req.session.wechatUserInfo.headimgurl'
+	//												});
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/findDir&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
@@ -522,7 +522,7 @@ router.post('/active', function(req, res) {
 											throw error;
 										} else {
 											//save to other server
-											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
+											/*var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 											console.log("reqUrl : " + reqUrl);
 											request(reqUrl, function(error, response, body) {
 												console.log("response.statusCode : " + response.statusCode);
@@ -550,6 +550,11 @@ router.post('/active', function(req, res) {
 														"message": "激活失败"
 													});
 												}
+											});*/
+											res.json({
+												"status": 1,
+												"message": "激活成功",
+												"url": "/users/usercenter"
 											});
 										}
 									});
@@ -564,7 +569,7 @@ router.post('/active', function(req, res) {
 													throw error;
 												} else {
 													//save to other server
-													var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
+													/*var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
 													console.log("reqUrl : " + reqUrl);
 													request(reqUrl, function(error, response, body) {
 														console.log("response.statusCode : " + response.statusCode);
@@ -592,6 +597,11 @@ router.post('/active', function(req, res) {
 																"message": "激活失败"
 															});
 														}
+													});*/
+													res.json({
+														"status": 1,
+														"message": "激活成功",
+														"url": "/users/usercenter"
 													});
 												}
 											});
