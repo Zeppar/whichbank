@@ -165,12 +165,12 @@ router.get('/getRemainTimeAndFaceID', function(req, res, next) {
 });
 
 router.get("/usercenter", function(req, res) {
-		res.render("usercenter", {
-														username: 'req.session.user.username',
-														phone: 'req.session.user.phone',
-														icon: 'req.session.wechatUserInfo.headimgurl'
-													});
-//	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/findDir&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
+//		res.render("usercenter", {
+//														username: 'req.session.user.username',
+//														phone: 'req.session.user.phone',
+//														icon: 'req.session.wechatUserInfo.headimgurl'
+//													});
+	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/findDir&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
 router.get("/findDir", function(req, res) {
