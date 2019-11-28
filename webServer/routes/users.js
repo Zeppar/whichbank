@@ -210,7 +210,7 @@ router.get("/findDir", function(req, res) {
 												//												'idnumber': results[0].idnumber,
 												'userid': results[0].userid,
 												'acstatus': results[0].acstatus,
-												'actime': results[0].actime,
+												'actime': results[0].actime
 											};
 											req.session.user = user;
 
@@ -235,6 +235,9 @@ router.get("/findDir", function(req, res) {
 												} else {
 													var accode = createACCode(6);
 													var timestamp = new Date().getTime();
+
+													console.log("deactiveUserAndUpdateAccode");
+													console.log(timestamp);
 													connection.query(userSQL.deactiveUserAndUpdateAccode, [0, timestamp, accode, req.session.user.userid], function(error, results) {
 														if(error) {
 															throw error;
@@ -545,6 +548,8 @@ router.post('/active', function(req, res) {
 							} else {
 								if(results.length == 0) {
 									var timestamp = new Date().getTime();
+									console.log("activeUserByUserid");
+									console.log(timestamp);
 									connection.query(userSQL.activeUserByUserid, [1, timestamp, req.session.user.userid], function(error, results) {
 										if(error) {
 											throw error;
