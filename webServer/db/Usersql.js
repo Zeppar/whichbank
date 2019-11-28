@@ -4,6 +4,7 @@ var UserSQL = {
 	getUserByPhone: 'SELECT * FROM User WHERE phone = ?',
 	getUserByUserId: 'SELECT * FROM User WHERE userid = ?',
 	activeUserByUserid: 'UPDATE User SET acstatus = ?, actime = ? where userid = ?',
+	deactiveUserAndUpdateAccode: 'UPDATE User SET acstatus = ?, actime = ?, accode = ? where userid = ?',
 	getManagerByUsername: 'SELECT * FROM Manager where username = ?',
 	getRealInfo: 'SELECT * FROM UserRealInfo',
 	getRealInfoByBatch: 'SELECT * FROM UserRealInfo where batch = ?',

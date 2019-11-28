@@ -1,9 +1,78 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  background-color: #FAFAFA;
+	background-color: #E8E8E8;
 }
 
-a {
-  color: #00B7FF;
+
+.common-main-title {
+	color: #1A1A1A;
+	font-size: 24px;
+	text-align: center;
+}
+
+.common-sub-title {
+	color: #242424;
+	font-size: 14px;
+}
+
+.common-footer-text {
+	color: #242424;
+	font-size: 12px;
+	margin-top: 5px;
+	text-align: center;
+}
+
+.common-input-div {
+	padding: 10px;
+	position: relative;
+	background: #FFFFFF;
+	border-radius: 8px;
+	margin: 0 15px;
+	margin-bottom: 10px;
+	height: 30px;
+}
+
+.common-input-inner {
+	background: #FFFFFF;
+	font-size: 15px;
+	border: none;
+	outline: none;
+	height: 100%;
+	width: 100%;
+}
+
+.common-input-inner-left {
+	background: red;
+	font-size: 15px;
+	border: none;
+	outline: none;
+	height: 100%;
+}
+
+.common-input-inner-right {
+	background: yellow;
+	font-size: 15px;
+	border: none;
+	outline: none;
+	height: 100%;
+}
+
+.common-btn-div {
+	background: #1A1A1A;
+	padding: 10px;
+	border-radius: 8px;
+	margin: 0 15px;
+	margin-top: 20px;
+	height: 30px;
+}
+
+.common-btn-inner {
+	background: #1A1A1A;
+	border: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.common-btn-text {
+	color: #FFFFFF;
+	font-size: 16px;
 }

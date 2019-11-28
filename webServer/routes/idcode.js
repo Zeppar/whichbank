@@ -42,7 +42,7 @@ router.post('/sendCode', function(req, res) {
 			//			'nick': 'sandbox_c_1',
 			'extend': '',
 			'sms_type': 'normal',
-			'sms_free_sign_name': 'whichbanks',
+			'sms_free_sign_name': '微尺伴客',
 			'sms_param': "{code:'" + code + "',product:'微尺伴客'}",
 			'rec_num': req.body.phone,
 			'sms_template_code': "SMS_13256687"

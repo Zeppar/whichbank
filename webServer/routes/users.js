@@ -165,11 +165,11 @@ router.get('/getRemainTimeAndFaceID', function(req, res, next) {
 });
 
 router.get("/usercenter", function(req, res) {
-//		res.render("usercenter", {
-//														username: 'req.session.user.username',
-//														phone: 'req.session.user.phone',
-//														icon: 'req.session.wechatUserInfo.headimgurl'
-//													});
+	//		res.render("usercenter", {
+	//														username: 'req.session.user.username',
+	//														phone: 'req.session.user.phone',
+	//														icon: 'req.session.wechatUserInfo.headimgurl'
+	//													});
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/findDir&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
@@ -207,19 +207,39 @@ router.get("/findDir", function(req, res) {
 											var user = {
 												'phone': results[0].phone,
 												'username': results[0].name,
-												'idnumber': results[0].idnumber,
+												//												'idnumber': results[0].idnumber,
 												'userid': results[0].userid,
 												'acstatus': results[0].acstatus,
-												'actime': results[0].actime
+												'actime': results[0].actime,
 											};
 											req.session.user = user;
+
 											if(req.session.user.acstatus != 0) {
-												res.render("usercenter", {
-													username: req.session.user.username,
-													phone: req.session.user.phone,
-													icon: req.session.wechatUserInfo.headimgurl
-												});
+
+												var timelimit = new Date(); //实例化一个Date对象  
+												timelimit.setTime(results[0].actime);
+												var ts = timelimit.setFullYear(timelimit.getFullYear() + 1);
+												var time = ts - new Date().getTime();
+												if(time > 0) {
+													res.render("usercenter", {
+														username: req.session.user.username,
+														phone: req.session.user.phone,
+														icon: req.session.wechatUserInfo.headimgurl
+													});
+												} else {
+													var accode = createACCode(6);
+													var timestamp = new Date().getTime();
+													connection.query(userSQL.deactiveUserAndUpdateAccode, [0, timestamp, accode, req.session.user.userid], function(error, results) {
+														if(error) {
+															throw error;
+														} else {
+															res.render("active");
+														}
+													});
+
+												}
 											} else {
+
 												res.render("active");
 											}
 										} else {
@@ -307,6 +327,7 @@ router.post("/judgeRegister", function(req, res) {
 		}
 	});
 })
+
 //登录
 router.post('/login', function(req, res) {
 	//check if code is right
@@ -350,7 +371,7 @@ router.post('/login', function(req, res) {
 									var user = {
 										'phone': req.body.phone,
 										'username': _results[0].name,
-										'idnumber': _results[0].idnumber,
+										//										'idnumber': _results[0].idnumber,
 										'userid': _results[0].userid,
 										'acstatus': _results[0].acstatus
 									};
@@ -463,9 +484,10 @@ router.post('/register', function(req, res) {
 											var user = {
 												'phone': req.body.phone,
 												'username': req.body.name,
-												'idnumber': req.body.idnumber,
+												//												'idnumber': req.body.idnumber,
 												'userid': req.session.wechatAssess.openid,
-												'acstatus': 0
+												'acstatus': 0,
+												'actime': 0
 											};
 											req.session.user = user;
 											res.json({
@@ -522,40 +544,55 @@ router.post('/active', function(req, res) {
 											throw error;
 										} else {
 											//save to other server
-											/*var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
-											console.log("reqUrl : " + reqUrl);
-											request(reqUrl, function(error, response, body) {
-												console.log("response.statusCode : " + response.statusCode);
-												if(!error && response.statusCode == 200) {
-													console.log(body);
-													if(body.startsWith('Y')) {
-														console.log("成功");
-														req.session.user.acstatus = 1;
-														res.json({
-															"status": 1,
-															"message": "激活成功",
-															"url": "/users/usercenter"
-														});
+											//											var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid; 
+											if(req.session.user.actime != 0) {
+												res.json({
+													"status": 1,
+													"message": "激活成功",
+													"url": "/users/usercenter"
+												});
+											} else {
+
+												var reqUrl = 'http://122.112.240.88:28889/CARD_ADD.aspx?id=' + req.session.user.phone +
+													'&mc=' + escape(req.session.user.username) + '&sj=' + req.session.user.phone +
+													'&WXID=' + req.session.wechatAssess.openid;
+												//											var reqUrl = 'http://122.112.240.88:28889/CARD_ADD.aspx?id=15000000011'  
+												//											+ '&mc=' + req.session.user.username + '&sj=15000000011'   
+												//											+ '&WXID=' + req.session.wechatAssess.openid;
+												console.log("reqUrl : " + reqUrl);
+												request(reqUrl, function(error, response, body) {
+													console.log("response.statusCode : " + response.statusCode);
+													if(!error && response.statusCode == 200) {
+														console.log(body);
+														if(body.startsWith('Y')) {
+															console.log("成功");
+															req.session.user.acstatus = 1;
+															res.json({
+																"status": 1,
+																"message": "激活成功",
+																"url": "/users/usercenter"
+															});
+														} else {
+															console.log("失败");
+															res.json({
+																"status": -1,
+																"message": "激活失败"
+															});
+														}
 													} else {
-														console.log("失败");
+														console.log('error');
 														res.json({
 															"status": -1,
 															"message": "激活失败"
 														});
 													}
-												} else {
-													console.log('error');
-													res.json({
-														"status": -1,
-														"message": "激活失败"
-													});
-												}
-											});*/
-											res.json({
-												"status": 1,
-												"message": "激活成功",
-												"url": "/users/usercenter"
-											});
+												});
+											}
+											//											res.json({
+											//												"status": 1,
+											//												"message": "激活成功",
+											//												"url": "/users/usercenter"
+											//											});
 										}
 									});
 								} else {
@@ -563,46 +600,68 @@ router.post('/active', function(req, res) {
 										if(error) {
 											throw error;
 										} else {
-											var timestamp = results[0].actime;
+											//var timestamp = results[0].actime;
+
+											var timelimit = new Date(); //实例化一个Date对象  
+											timelimit.setTime(results[0].actime);
+											var ts = timelimit.setFullYear(timelimit.getFullYear() + 1);
+											var time = ts - new Date().getTime();
+											
+											var timestmap = results[0].actime;
+											if(time < 0) {
+												timestamp = new Date().getTime();
+											}
+
 											connection.query(userSQL.activeUserByUserid, [1, timestamp, req.session.user.userid], function(error, results) {
 												if(error) {
 													throw error;
 												} else {
 													//save to other server
-													/*var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
-													console.log("reqUrl : " + reqUrl);
-													request(reqUrl, function(error, response, body) {
-														console.log("response.statusCode : " + response.statusCode);
-														if(!error && response.statusCode == 200) {
-															console.log(body);
-															if(body.startsWith('Y')) {
-																console.log("成功");
-																req.session.user.acstatus = 1;
-																res.json({
-																	"status": 1,
-																	"message": "激活成功",
-																	"url": "/users/usercenter"
-																});
+													//													var reqUrl = 'http://139.196.124.72:28889/CARD_ADD.aspx?id=' + req.session.user.idnumber + '&mc=' + req.session.user.phone + '&sj=' + req.session.user.phone + '&WXID=' + req.session.wechatAssess.openid;
+													if(req.session.user.actime != 0) {
+														res.json({
+															"status": 1,
+															"message": "激活成功",
+															"url": "/users/usercenter"
+														});
+													} else {
+														var reqUrl = 'http://122.112.240.88:28889/CARD_ADD.aspx?id=' + req.session.user.phone +
+															'&mc=' + escape(req.session.user.username) + '&sj=' + req.session.user.phone +
+															'&WXID=' + req.session.wechatAssess.openid;
+														console.log("reqUrl : " + reqUrl);
+														request(reqUrl, function(error, response, body) {
+															console.log("response.statusCode : " + response.statusCode);
+															if(!error && response.statusCode == 200) {
+																console.log(body);
+																if(body.startsWith('Y')) {
+																	console.log("成功");
+																	req.session.user.acstatus = 1;
+																	res.json({
+																		"status": 1,
+																		"message": "激活成功",
+																		"url": "/users/usercenter"
+																	});
+																} else {
+																	console.log("失败");
+																	res.json({
+																		"status": -1,
+																		"message": "激活失败"
+																	});
+																}
 															} else {
-																console.log("失败");
+																console.log('error');
 																res.json({
 																	"status": -1,
 																	"message": "激活失败"
 																});
 															}
-														} else {
-															console.log('error');
-															res.json({
-																"status": -1,
-																"message": "激活失败"
-															});
-														}
-													});*/
-													res.json({
-														"status": 1,
-														"message": "激活成功",
-														"url": "/users/usercenter"
-													});
+														});
+													}
+													//													res.json({
+													//														"status": 1,
+													//														"message": "激活成功",
+													//														"url": "/users/usercenter"
+													//													});
 												}
 											});
 										}
@@ -739,6 +798,42 @@ router.post('/adminLogin', function(req, res) {
 router.get('/import', function(req, res, next) {
 	res.render('import');
 });
+
+/*router.get('/testAdd', function(req, res, next) {
+//	var reqUrl = 'http://122.112.240.88:28889/CARD_ADD.aspx?id=15000000006' 
+//		+ '&mc=ds' + '&sj=15000000006' 
+//		+ '&WXID=15000000006';
+    var n = escape("你随机");
+	var reqUrl = 'http://122.112.240.88:28889/CARD_ADD.aspx?id=19877763222&mc=' + '挖到' + '&sj=17852835452&WXID=oXhLlv8xoAf-Fm0Cq0iTIQqC-z88';
+	console.log("reqUrl : " + reqUrl);
+	request(reqUrl, function(error, response, body) {
+		console.log("12323123213123213213213123   " + body);
+		console.log("response.statusCode : " + response.statusCode);
+		if(!error && response.statusCode == 200) {
+			console.log(body);
+			if(body.startsWith('Y')) {
+				console.log("成功");
+				req.session.user.acstatus = 1;
+				res.json({
+					"status": 1,
+					"message": "激活成功"
+				});
+			} else {
+				console.log("失败");
+				res.json({
+					"status": -1,
+					"message": "激活失败"
+				});
+			}
+		} else {
+			console.log('error');
+			res.json({
+				"status": -1,
+				"message": "激活失败"
+			});
+		}
+	});
+});*/
 
 router.post('/import', function(req, res) {
 	var form = formidable.IncomingForm({

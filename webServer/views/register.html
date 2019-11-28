@@ -13,30 +13,11 @@
 		<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
 		<script type="text/javascript" src="/javascripts/util.js"></script>
 		<script src="/javascripts/require.js"></script>
-<<<<<<< HEAD
-		<!--script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/jquery-1.11.1.min.js?v=20160906"></script-->
-		<script type="text/javascript" src="/javascripts/jquery-1.10.2.min.js"></script>
-		<!--script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/mui.min.js?v=20160906"></script-->
-		<script type="text/javascript" src="/javascripts/mui.min.js"></script>
-		<!--script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/app/common.js?v=20160906"></script-->
-		<link href="/stylesheets/bootstrap.min.css" rel="stylesheet"/>
-		<!--link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet"-->
-		<!--link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet"-->
-		<!--link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/fangsuo_v2.css" rel="stylesheet"-->
-		<!--link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/icons-extra.css" rel="stylesheet"-->
-		<link href="/stylesheets/mui.min.css" rel="stylesheet">
-=======
-		<!--<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/jquery-1.11.1.min.js?v=20160906"></script>
-		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/mui.min.js?v=20160906"></script>
-		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/app/common.js?v=20160906"></script>
-		<link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet">
-		<link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet">
-		<link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/fangsuo_v2.css" rel="stylesheet">
-		<link href="http://wechat.fangsuo.com/addons/fangsuo/assets/css/icons-extra.css" rel="stylesheet">-->
->>>>>>> origin/master
+		<script src="/javascripts/jquery-1.10.2.min.js"></script>
 		<link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-		<link href="/stylesheets/mui.picker.min.css" rel="stylesheet" />
-		<script src="/javascripts/mui.picker.min.js"></script>
+		<script src="/javascripts/LCalendar.js"></script>
+		<link href="/stylesheets/LCalendar.css" rel="stylesheet">
+		<link href="/stylesheets/style.css" rel="stylesheet" />
 		<script type="text/javascript">
 			if(navigator.appName == 'Microsoft Internet Explorer') {
 				if(navigator.userAgent.indexOf("MSIE 5.0") > 0 || navigator.userAgent.indexOf("MSIE 6.0") > 0 || navigator.userAgent.indexOf("MSIE 7.0") > 0) {
@@ -49,152 +30,72 @@
 	<body>
 		<div class="container container-fill">
 
-			<div class="mui-content mc-login">
-				<div class="avatar mui-text-center">
-					<h1 class="fs_login_h1" style="color: #1A1A1A">会员卡注册<br>
-            <small style="color : #242424">EXECUTIVE MEMBERSHIP REGISTRATION</small>
+			<h1 class="common-main-title">会员卡注册<br>
+            <small class="common-sub-title">MEMBERSHIP&nbsp;REGISTRATION</small>
         </h1>
-				</div>
-				<div class="mc-login-code" id="register-code">
-					<div class="sendcode">
-						<div class="mui-input-group mui-mt15">
-							<div class="mui-input-row">
-								<input name="mobile" class="js-mobile-val en" type="text" placeholder="请输入手机号码" />
-							</div>
-						</div>
-						<div class="mui-input-row" style="margin-bottom: 5px;">
-							<input name="code" class="vercode en" type="text" placeholder="验证码">
-							<div class="getcode">
-								<div class="js-timer">
-									<button class="mui-btn js-check-mobile" style="width:30%" onclick="sendCode()">获取验证码</button>
-								</div>
-							</div>
-						</div>
 
-						<p class="mui-text-muted small" style="margin-top: 15px; color: #525252; padding-left: 1px; margin-bottom: 5px">
-							为保障您的权益，请完善以下资料：
-						</p>
+			
 
-						<div class="mui-input-group">
-							<div class="mui-input-row">
-								<label for="name" style="color: #868686">姓名</label>
-								<input class="mui-text-right" id="name" name="name" type="text" placeholder="" style="color: #868686" />
-							</div>
-						</div>
-						<!--<div class="mui-input-group">
-							<div class="mui-input-row">
-								<label for="name" style="color: #868686">身份证号</label>
-								<input class="mui-text-right" id="idnumber" name="idnumber" type="text" placeholder="" style="color: #868686" />
-							</div>
-						</div>-->
-						<div class="mui-input-group" style="margin-bottom: 5px;">
-							<div class="mui-input-row">
-								<label style="color: #868686">性别</label>
-								<input class="mui-text-right" id='gender-picker' type="text" placeholder="" style="color: #868686;" readonly="readonly"/>
-								<input id='gender' value="1" type="hidden" />
-							</div>
-						</div>
-						<div class="mui-input-group">
-							<div class="mui-input-row">
-								<label style="color: #868686">生日</label>
-								<input id='birthday-picker' class="mui-text-right birth en" type="text" placeholder="" style="color: #868686" readonly="readonly"/>
-								<input id='birthday' type="hidden" />
-							</div>
-						</div>
-
-						<div class="mui-mt15 mui-text-center">
-							<p class="mui-text-muted mui-mb15 small">确认注册前，请详细阅读 <span style="color: #242424">《会员细则》</span></p>
-							<button class="mui-btn mui-btn-success mui-btn-block sign-up" onclick="confirmRegister()" style="background-color: #1A1A1A;border: 0;">确认注册</button>
-						</div>
-
-					</div>
-
-					<!--<div class="mui-text-center mui-mt15 small">
-						<form id="loginForm" action="/users/login" method="get">
-							<a onclick="sendLogin()"><strong style="color: #FF4040">会员登录</strong></a>
-						</form>
-					</div>-->
-				</div>
+			<div class="common-input-div">
+				<input id="js-mobile-val" class="common-input-inner" type="text" placeholder="请输入手机号码" />
 			</div>
-	</body>
-	<script>
-		(function($, doc) {
-			$.init();
-			$.ready(function() {
-				//普通示例
-				var userPicker = new $.PopPicker();
-				userPicker.setData([{
-					value: 1,
-					text: '男'
-				}, {
-					value: 2,
-					text: '女'
-				}]);
-				var result = $('#gender')[0],
-					gpi = $('#gender-picker')[0];
-				gpi.addEventListener('tap', function() {
-					userPicker.show(function(items) {
-						result.value = items[0].value;
-						gpi.value = items[0].text;
-						//返回 false 可以阻止选择框的关闭
-						//return false;
-					});
-				}, false);
-			});
-		})(mui, document);
 
-		//选择时间 http://www.dcloud.io/hellomui/examples/dtpicker.html：
-		(function($) {
-			$.init();
-			var result = $('#birthday')[0],
-				bpi = $('#birthday-picker')[0];
-			var picker = new $.DtPicker({
-				type: "date",
-				beginYear: "1900"
-			});
-			bpi.addEventListener('tap', function() {
-				picker.show(function(rs) {
-					/*
-					 * rs.value 拼合后的 value
-					 * rs.text 拼合后的 text
-					 * rs.y 年，可以通过 rs.y.vaue 和 rs.y.text 获取值和文本
-					 * rs.m 月，用法同年
-					 * rs.d 日，用法同年
-					 * rs.h 时，用法同年
-					 * rs.i 分（minutes 的第二个字母），用法同年
-					 */
-					result.value = rs.value;
-					console.log(result.value);
-					bpi.value = rs.y.text + '年' + rs.m.text + '月' + rs.d.text + '日';
-					/*
-					 * 返回 false 可以阻止选择框的关闭
-					 * return false;
-					 */
-					//                    picker.dispose();
-				});
-			}, false);
-		})(mui);
-	</script>
-	<style>
-		.mui-input-row.saomiao>span {
-			position: absolute;
-			right: 0;
-			top: 0;
-			height: 44px;
-			width: 40px;
-			line-height: 46px;
-			color: #868686;
-			cursor: pointer;
-		}
-		
-		.mui-text-muted {
-			color: #9e9e9e
-		}
-	</style>
+			<div style="height: 60px;">
+
+				<div class="common-input-div" style="width: 48%; float:left; margin-right: 0">
+					<input id="vercode" class="common-input-inner" type="text" placeholder="验证码">
+				</div>
+
+				<div class="common-input-div" style="width: 28%; float:right;margin-left: 0;">
+					<div class="js-timer" style="margin-top: 4px;">
+						<button class="common-input-inner" onclick="sendCode()"><span id="code-text" style="font-size: 14px;color: #464547;">获取验证码</span></button>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="common-footer-text" style="height: 20px;margin-top: 15px;margin-bottom: 10px;">
+				<span>为保障您的权益，请完善以下资料：</span>
+			</div>
+
+			<div class="common-input-div">
+				<input class="common-input-inner" id="name" type="text" placeholder="请输入姓名" style="color: #868686" />
+			</div>
+
+			<div class="common-input-div">
+				<input class='common-input-inner' id="gender" type="text" placeholder="请输入性别" style="color: #868686;" />
+			</div>
+
+			<div class="common-input-div">
+				<input class="common-input-inner" id='birthday-picker' type="text" placeholder="请选择生日" style="color: #868686" readonly="readonly" />
+			</div>
+
+			<div class="common-footer-text">
+				确认注册前，请详细阅读 <strong style="color: #000000">《会员细则》</strong>
+			</div>
+
+			<div class="common-btn-div">
+				<button class="common-btn-inner" onclick="confirmRegister()" style="background-color: #1A1A1A;border: 0;"><span class="common-btn-text">确认注册</span></button>
+			</div>
+
+		</div>
+	</body>
+
 	<script type="text/javascript">
+		$(function() {
+			var curTime = new Date();
+			var calendar = new LCalendar();
+			calendar.init({
+				'trigger': '#birthday-picker', //标签id
+				'type': 'date', //date 调出日期选择 datetime 调出日期时间选择 time 调出时间选择 ym 调出年月选择,
+				'minDate': curTime.getFullYear() - 100 + '-' + 1 + '-' + 1, //最小日期
+				'maxDate': curTime.getFullYear() + '-' + curTime.getMonth() + '-' + curTime.getDay() //最大日期
+			});
+		});
+
 		function sendCode() {
 			var data = {
-				phone: $('.js-mobile-val').val().trim()
+				phone: $('#js-mobile-val').val().trim()
 			};
 			if(checkMobile(data)) {
 				confirmSendCode(data)
@@ -206,8 +107,7 @@
 		}
 
 		function sendRequest(request) {
-			var loading = $('<div class="mui-toast-container mui-active js-toast-loading"><div class="mui-toast-message"><div class="mui-toast-icon"><span class="fa fa-spinner fa-spin"></span></div>请求中</div></div>');
-			document.body.appendChild(loading[0]);
+
 			$.ajax({
 				type: "POST",
 				timeout: 10000,
@@ -217,26 +117,26 @@
 				success: function(res) {
 					console.log("res : " + res["status"]);
 					if(res['status'] != 1) {
-						return util.toast(res['message'], '', 'error');
+						return alert(res['message']);
 					}
 					request.successCallback(res);
 				},
 				error: function(XMLHttpRequest, status) {
 					if(status == 'timeout') {
-						util.toast('请求超时，请稍后再试', '', 'error');
+						alert('请求超时，请稍后再试');
 					} else {
-						util.toast('请求失败，请稍后再试', '', 'error');
+						alert('请求失败，请稍后再试');
 					}
 				},
 				complete: function() {
-					loading.remove()
+
 				}
 			});
 		}
 
 		function checkMobile(data) {
 			if(data.phone.length !== 11 || !/^1[3|4|5|7|8][0-9]{9}$/.test(data.phone)) {
-				util.toast('请输入正确的手机号', '', 'error');
+				alert('请输入正确的手机号');
 				return false;
 			}
 			return true;
@@ -248,26 +148,21 @@
 			}
 
 			if(data.code.trim().length !== 6) {
-				util.toast('请输入正确的验证码', '', 'error');
+				alert('请输入正确的验证码');
 				return false;
 			}
 			if(data.name.trim().length == 0) {
-				util.toast('请输入姓名', '', 'error');
+				alert.toast('请输入姓名');
 				return false;
 			}
 
-//			if(data.idnumber.trim().length != 18) {
-//				util.toast('请输入正确的身份证号', '', 'error');
-//				return false;
-//			}
-
 			if(data.gender.length == 0) {
-				util.toast('请输入性别', '', 'error');
+				alert('请输入性别');
 				return false;
 			}
 
 			if(data.birthday.length == 0) {
-				util.toast('请输入生日', '', 'error');
+				alert('请输入生日');
 				return false;
 			}
 			return true
@@ -294,8 +189,9 @@
 					//do nothing
 					var option = {
 						'showElement': $('.js-timer'),
-						'showTips': "%s秒后重新获取",
-						'btnTips': '<button class="mui-btn js-check-mobile" onclick="sendCode()">重新获取验证码</button>'
+						'elementText': $('#code-text'),
+						'showTips': "%ss",
+						'btnTips': '<button class="common-input-inner" onclick="sendCode()"><span id="code-text" style="font-size: 14px;color: #464547;">获取验证码</span></button>'
 					};
 					sendCodeUI(option, 60);
 				}
@@ -304,7 +200,7 @@
 		}
 
 		function sendCodeUI(option, sec) {
-			option.showElement.html(option.showTips.replace("%s", sec));
+			option.elementText.html(option.showTips.replace("%s", sec));
 			option.showElement.attr('disabled', true);
 			var timer = setInterval(function() {
 				sec--;
@@ -314,19 +210,26 @@
 					option.showElement.html(option.btnTips);
 					option.showElement.attr('disabled', false);
 				} else {
-					option.showElement.html(option.showTips.replace("%s", sec));
+					option.elementText.html(option.showTips.replace("%s", sec));
 				}
 			}, 1000);
 		}
 
 		function confirmRegister() {
+			var gd = $('#gender').val().trim();
+			if(gd != "男" &&  gd != "女") {
+				alert('请在性别框输入"男"或"女"');
+				return;
+			}
+			
+			
+			
 			var data = {
-				phone: $('.js-mobile-val').val().trim(),
-				code: $('.vercode').val().trim(),
+				phone: $('#js-mobile-val').val().trim(),
+				code: $('#vercode').val().trim(),
 				name: $('#name').val().trim(),
-//				idnumber: $('#idnumber').val().trim(),
-				gender: $('#gender').val(),
-				birthday: $('#birthday').val()
+				gender:gd == "男" ? 1 : 2,
+				birthday: $('#birthday-picker').val()
 			};
 
 			console.log(data);
