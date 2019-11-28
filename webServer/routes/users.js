@@ -218,8 +218,14 @@ router.get("/findDir", function(req, res) {
 
 												var timelimit = new Date(); //实例化一个Date对象  
 												timelimit.setTime(results[0].actime);
+
+												console.log(results[0].actime)
+
 												var ts = timelimit.setFullYear(timelimit.getFullYear() + 1);
+
+												console.log(ts);
 												var time = ts - new Date().getTime();
+												console.log(time);
 												if(time > 0) {
 													res.render("usercenter", {
 														username: req.session.user.username,
