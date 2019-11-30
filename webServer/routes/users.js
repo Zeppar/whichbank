@@ -1065,7 +1065,7 @@ var ExcelUserParse = function(newPath, batch, phone) {
 	var sqlOperation = "INSERT INTO User (phone, name, gender, acstatus, actime) VALUES ";
 	var list = new Array();
 	var findNew = false;
-	for(var i = 1; i < excelObj.length; i++) {
+	for(var i = 1; i < excelObj.length - 1; i++) {
 		var rdata = excelObj[i];
 		// 判断存在性 并存储进数据库
 		if(!contains(list, rdata[1].toString().trim())) {
