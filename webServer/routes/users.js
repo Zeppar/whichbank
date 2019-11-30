@@ -1080,8 +1080,8 @@ var ExcelUserParse = function(newPath, batch, phone) {
 				str += ('2,');
 			str += ('1,');
 			var time = rdata[18].toString().trim();
-			var time = time.split(' ')[0];
-			var arr = data.split('-');
+			var t = time.split(' ')[0];
+			var arr = t.split('-');
 			var actime = new Date();
 			actime.setFullYear(arr[0]);
 			actime.setMonth(arr[1]);
