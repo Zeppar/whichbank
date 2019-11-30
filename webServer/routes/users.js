@@ -891,6 +891,56 @@ router.post('/import', function(req, res) {
 		});
 });
 
+router.post('/importUser', function(req, res) {
+	var form = formidable.IncomingForm({
+		encoding: 'utf-8', //上传编码
+		uploadDir: "public/excels", //上传目录，指的是服务器的路径，如果不存在将会报错。
+		keepExtensions: true, //保留后缀
+		maxFieldsSize: 2 * 1024 * 1024 //byte//最大可上传大小
+	});
+	var allFile = [];
+	var allFile = [];
+
+	form.on('progress', function(bytesReceived, bytesExpected) { //在控制台打印文件上传进度
+			var progressInfo = {
+				value: bytesReceived,
+				total: bytesExpected
+			};
+			console.log('[progress]: ' + JSON.stringify(progressInfo));
+			//			res.write(JSON.stringify(progressInfo));
+		})
+		.on('file', function(filed, file) {
+			allFile.push([filed, file]); //收集传过来的所有文件
+		})
+		.on('end', function() {})
+		.on('error', function(err) {
+			console.error('上传失败：', err.message);
+			next(err);
+			res.json({
+				"status": 0,
+				"message": "上传失败"
+			});
+		})
+		.parse(req, function(err, fields, files) {
+			if(err) {
+				console.log(err);
+			}
+			allFile.forEach(function(file, index) {
+				var fieldName = file[0];
+				var types = file[1].name.split('.');
+				var date = new Date();
+				var ms = Date.parse(date);
+				var savePath = form.uploadDir + "/" + types[0] + "." + String(types[types.length - 1]);
+				fs.renameSync(file[1].path, savePath); //重命名文件，默认的文件名是带有一串编码的，我们要把它还原为它原先的名字。
+				ExcelUserParse(savePath, currentBatch);
+			});
+			res.json({
+				"status": 1,
+				"message": "上传成功"
+			});
+		});
+});
+
 var currentBatch = 0;
 router.get("/judgeBatch", function(req, res, next) {
 	var param = req.query || req.params;
@@ -960,8 +1010,9 @@ var ExcelParse = function(newPath, batch) {
 	var obj = node_xlsx.parse(newPath);
 	var excelObj = obj[0].data; //取得第一个excel表的数据  
 
-	//循环遍历表每一行的数据  
+	// 循环遍历表每一行的数据  
 	var sqlOperation = "INSERT INTO UserRealInfo (name, idnumber, phone, cardid, batch) VALUES ";
+	// var sqlOperation = "INSERT INTO User (phone, name, gender, acstatus, actime) VALUES ";
 	var list = new Array();
 	var findNew = false;
 	connection.query(userSQL.getRealInfo, function(error, results) {
@@ -1003,6 +1054,52 @@ var ExcelParse = function(newPath, batch) {
 			}
 		}
 	});
+};
+
+var ExcelUserParse = function(newPath, batch, phone) {
+	console.log("ExcelParse");
+	var obj = node_xlsx.parse(newPath);
+	var excelObj = obj[0].data; //取得第一个excel表的数据  
+
+	// 循环遍历表每一行的数据  
+	var sqlOperation = "INSERT INTO User (phone, name, gender, acstatus, actime) VALUES ";
+	var list = new Array();
+	var findNew = false;
+	for(var i = 1; i < excelObj.length; i++) {
+		var rdata = excelObj[i];
+		// 判断存在性 并存储进数据库
+		if(!contains(list, rdata[1].toString().trim())) {
+			findNew = true;
+			var str = "(";
+			str += ('"' + rdata[1].toString().trim() + '",');
+			str += ('"微尺伴客会员",');
+			var sex = rdata[10].toString().trim();
+			if(sex == "男士")
+				str += ('1,');
+			else 
+				str += ('2,');
+			str += ('1,');
+			var time = rdata[18].toString().trim();
+			var date = time.split(' ')[0];
+			var arr = data.split('-');
+			var actime = new Date();
+			actime.setFullYear(arr[0]);
+			actime.setMonth(arr[1]);
+			actime.setDay(arr[2]);
+			str += (actime + ',');
+			sqlOperation += str;
+		}
+	}
+	if(findNew) {
+		sqlOperation = sqlOperation.substring(0, sqlOperation.length - 1);
+		connection.query(sqlOperation, function(error, results) {
+			if(error) {
+				throw error;
+			} else {
+				console.log("导入新用户成功");
+			}
+		});
+	}
 };
 
 // get code

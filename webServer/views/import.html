@@ -13,7 +13,6 @@
 		<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
 		<script type="text/javascript" src="/javascripts/util.js"></script>
 		<script src="/javascripts/require.js"></script>
-<<<<<<< HEAD
 		<script type="text/javascript" src="/javascripts/jquery-1.10.2.min.js"></script>
 		<!--script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/jquery-1.11.1.min.js?v=20160906"></script-->
 		<script type="text/javascript" src="/javascripts/mui.min.js"></script>
@@ -23,13 +22,7 @@
 		<!--link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet"-->
 		<!--link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet"-->
 		 <link href="/stylesheets/mui.min.css" rel="stylesheet">
-=======
-		<!--<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/jquery-1.11.1.min.js?v=20160906"></script>
-		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/lib/mui.min.js?v=20160906"></script>
-		<script type="text/javascript" src="http://wechat.fangsuo.com/app/resource/js/app/common.js?v=20160906"></script>
-		<link href="http://wechat.fangsuo.com/app/resource/css/bootstrap.min.css?v=20160906" rel="stylesheet">
-		<link href="http://wechat.fangsuo.com/app/resource/css/common.min.css?v=20160906" rel="stylesheet">-->
->>>>>>> origin/master
+
 		<link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 		<script type="text/javascript">
 			if(navigator.appName == 'Microsoft Internet Explorer') {
@@ -81,7 +74,7 @@
 							var formData = new FormData();
 							formData.append("file", $("#myfile")[0].files[0]);
 							$.ajax({
-								url: '/users/import',
+								url: '/users/importUser',
 								type: 'POST',
 								data: formData,
 								// 告诉jQuery不要去处理发送的数据
