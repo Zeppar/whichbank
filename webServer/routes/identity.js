@@ -1,6 +1,7 @@
 var express = require('express');
 var mysql = require('mysql');
 var userSQL = require('../db/Usersql');
+var dbConfig = require('../db/DBConfig');
 var fs = require('fs');
 var UUid = require("node-uuid");
 var crypto = require("crypto");
@@ -15,13 +16,7 @@ var API_SECRET = 'e3e22565f93045308c65104aaff93688';
 var ADMIN_API_KEY = '87ca6fc077164b3e9c0bf16695111e70';
 var ADMIN_API_SECRET = '6c839cbde6f446b19695e4af46c6a651';
 
-var connection = mysql.createConnection({
-	host: '101.200.166.241',
-	user: 'root',
-	password: '123',
-	database: 'wechat_user',
-	port: 3306
-});
+var connection = mysql.createConnection(dbConfig.mysql);
 
 router.get('/faceDetect', function(req, res, next) {
 	if(req.session.user != null && req.session.user != undefined) {

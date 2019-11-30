@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var codeSQL = require('../db/Codesql')
+var codeSQL = require('../db/Codesql');
+var dbConfig = require('../db/DBConfig');
 var Alidayu = require('alidayujs');
 var mysql = require('mysql');
 
@@ -10,13 +11,7 @@ var config = {
 };
 var alidayu = new Alidayu(config);
 
-var connection = mysql.createConnection({
-	host: '101.200.166.241',
-	user: 'root',
-	password: '123',
-	database: 'wechat_user',
-	port: 3306
-});
+var connection = mysql.createConnection(dbConfig.mysql);
 
 function addNumber(_idx) {
 	var str = '';

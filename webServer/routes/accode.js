@@ -1,15 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var activeSQL = require('../db/Activesql');
+var dbConfig = require('../db/DBConfig');
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
-	host: '101.200.166.241',
-	user: 'root',
-	password: '123',
-	database: 'wechat_user',
-	port: 3306
-});
+var connection = mysql.createConnection(dbConfig.mysql);
 
 function RandomNum(Min, Max) {      
 	var Range = Max - Min;      

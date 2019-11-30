@@ -6,6 +6,7 @@ var mysql = require('mysql');
 var Alidayu = require('alidayujs');
 var userSQL = require('../db/Usersql');
 var codeSQL = require('../db/Codesql');
+var dbConfig = require('../db/DBConfig');
 var activeSQL = require('../db/Activesql');
 var router = express.Router();
 var request = require('request');
@@ -13,13 +14,7 @@ var formidable = require('formidable');
 var node_xlsx = require('node-xlsx');
 var fs = require('fs');
 
-var connection = mysql.createConnection({
-	host: '101.200.166.241',
-	user: 'root',
-	password: '123',
-	database: 'wechat_user',
-	port: 3306
-});
+var connection = mysql.createConnection(dbConfig.mysql);
 
 var alidayu = new Alidayu(config);
 var config = {
