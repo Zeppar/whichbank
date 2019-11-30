@@ -1086,7 +1086,9 @@ var ExcelUserParse = function(newPath, batch, phone) {
 			actime.setFullYear(arr[0]);
 			actime.setMonth(arr[1]);
 			actime.setDate(arr[2]);
-			str += (actime + ',');
+
+			str += (actime + '),');
+			console.log(str);
 			sqlOperation += str;
 		}
 	}
