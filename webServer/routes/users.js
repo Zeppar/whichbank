@@ -1062,7 +1062,7 @@ var ExcelUserParse = function(newPath, batch, phone) {
 	var excelObj = obj[0].data; //取得第一个excel表的数据  
 
 	// 循环遍历表每一行的数据  
-	var sqlOperation = "INSERT INTO User (phone, name, gender, acstatus, actime) VALUES ";
+	var sqlOperation = "INSERT INTO User (phone, name, gender, acstatus, actime, accode) VALUES ";
 	var list = new Array();
 	var findNew = false;
 	for(var i = 1; i < excelObj.length - 1; i++) {
@@ -1087,7 +1087,8 @@ var ExcelUserParse = function(newPath, batch, phone) {
 			actime.setMonth(arr[1]);
 			actime.setDate(arr[2]);
 
-			str += (actime.getTime() + '),');
+			str += (actime.getTime() + ',');
+			str += createACCode(6) + '),';
 			console.log(str);
 			sqlOperation += str;
 		}
