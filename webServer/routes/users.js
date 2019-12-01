@@ -33,6 +33,12 @@ router.get('/registergrant', function(req, res, next) {
 	res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx99de7fe83e043204&redirect_uri=http://wechat.whichbank.com.cn/users/register&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect');
 });
 
+
+router.get('/recover', function(req, res, next) {
+	//	res.send('respond with a resource');
+	res.render("recover");
+});
+
 //注册界面
 router.get('/register', function(req, res, next) {
 	var param = req.query || req.params;
@@ -800,6 +806,38 @@ router.post('/adminLogin', function(req, res) {
 	});
 });
 
+router.post('/recover', function(req, res) {
+	console.log(req.body.username);
+	connection.query(userSQL.getUserByPhone, [req.body.phone], function(error, results) {
+		if(error) {
+			throw error;
+		} else {
+			console.log(results);
+			if(results.length != 0) {
+				
+			connection.query(userSQL.updateUserId, [req.session.wechatAssess.openid, req.body.phone], function(error, results) {
+				if(error) {
+					throw error;
+				} else {
+					res.json({
+						"status": 1,
+						"message": "恢复成功",
+						"url": "/users/usercenter"
+					});
+				}
+			});
+
+
+			} else {
+				res.json({
+					"status": 0,
+					"message": "找不到该用户"
+				});
+			}
+		}
+	});
+});
+
 //import --used by manager
 router.get('/import', function(req, res, next) {
 	res.render('import');
@@ -1084,7 +1122,7 @@ var ExcelUserParse = function(newPath, batch, phone) {
 			var arr = t.split('-');
 			var actime = new Date();
 			actime.setFullYear(arr[0]);
-			actime.setMonth(arr[1]);
+			actime.setMonth(arr[1] - 1);
 			actime.setDate(arr[2]);
 
 			str += (actime.getTime() + ',');

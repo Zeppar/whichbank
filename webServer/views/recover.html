@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>微尺伴客</title>
+		<meta name="format-detection" content="telephone=no, address=no">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<!-- apple devices fullscreen -->
+		<meta name="apple-touch-fullscreen" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+		<script type="text/javascript" src="/javascripts/util.js"></script>
+		<script src="/javascripts/require.js"></script>
+		<script src="/javascripts/jquery-1.10.2.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+		<link href="http://libs.baidu.com/fontawesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
+		<script type="text/javascript">
+			if(navigator.appName == 'Microsoft Internet Explorer') {
+				if(navigator.userAgent.indexOf("MSIE 5.0") > 0 || navigator.userAgent.indexOf("MSIE 6.0") > 0 || navigator.userAgent.indexOf("MSIE 7.0") > 0) {
+					alert('您使用的 IE 浏览器版本过低, 推荐使用 Chrome 浏览器或 IE8 及以上版本浏览器.');
+				}
+			}
+		</script>
+		<script type="text/javascript">
+			$(function() {　　
+				// todo 
+			});
+
+			function confirmRecover() {
+
+				var data = {
+					code: $('#phone').val()
+				};
+				if(data.code.trim().length != 0) {
+					active(data);
+
+					$("#confirmBtn").attr("disabled", "disabled");
+				}
+			}
+
+			function active(data) {
+				var activeDt = {
+					url: "/users/recover",
+					data: data,
+					successCallback: function(data) {
+						//do nothing
+						alert(data['message']);
+						setTimeout(function() {
+							window.location.href = data.url;
+						}, 1000);
+					}
+				}
+				sendRequest(activeDt);
+			}
+
+			function sendRequest(request) {
+				$.ajax({
+					type: "POST",
+					timeout: 10000,
+					url: request.url,
+					data: request.data,
+					dataType: "json",
+					success: function(res) {
+						console.log("res : " + res["status"]);
+						if(res['status'] != 1) {
+							$("#confirmBtn").attr("disabled", false);
+							return alert(res['message']);
+						} else {
+							request.successCallback(res);
+						}
+					},
+					error: function(XMLHttpRequest, status) {
+						if(status == 'timeout') {
+							alert('请求超时，请稍后再试');
+						} else {
+							alert('请求失败，请稍后再试');
+						}
+						$("#confirmBtn").attr("disabled", false);
+					},
+					complete: function() {
+					}
+				});
+			}
+		</script>
+	</head>
+
+	<body>
+		<div class="container container-fill">
+
+			<h1 class="common-main-title">会员恢复<br><small class="common-sub-title">Member&nbsp; Active</small></h1>
+
+			<div class="common-input-div">
+				<input class="common-input-inner" id="phone" type="text" placeholder="请输入手机号" />
+			</div>
+
+			<div class="common-btn-div">
+				<button id="confirmBtn" class="common-btn-inner" onclick="confirmRecover()"><span class="common-btn-text">恢复</span></button>
+			</div>
+
+		</div>
+	</body>
