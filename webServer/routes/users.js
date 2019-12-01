@@ -807,7 +807,7 @@ router.post('/adminLogin', function(req, res) {
 });
 
 router.post('/recover', function(req, res) {
-	console.log(req.body.username);
+	console.log(req.body.phone);
 	connection.query(userSQL.getUserByPhone, [req.body.phone], function(error, results) {
 		if(error) {
 			throw error;
