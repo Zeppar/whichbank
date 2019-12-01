@@ -33,10 +33,10 @@
 				var data = {
 					phone: $('#phone').val()
 				};
-				if(data.code.trim().length != 0) {
+				if(data.phone.trim().length != 0) {
 					active(data);
 
-					$("#confirmBtn").attr("disabled", "disabled");
+					// $("#confirmBtn").attr("disabled", "disabled");
 				}
 			}
 
@@ -65,7 +65,7 @@
 					success: function(res) {
 						console.log("res : " + res["status"]);
 						if(res['status'] != 1) {
-							$("#confirmBtn").attr("disabled", false);
+							// $("#confirmBtn").attr("disabled", false);
 							return alert(res['message']);
 						} else {
 							request.successCallback(res);
@@ -77,7 +77,7 @@
 						} else {
 							alert('请求失败，请稍后再试');
 						}
-						$("#confirmBtn").attr("disabled", false);
+						// $("#confirmBtn").attr("disabled", false);
 					},
 					complete: function() {
 					}
