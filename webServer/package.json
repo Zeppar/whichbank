@@ -30,6 +30,6 @@
     "qr-image": "^3.2.0",
     "request": "^2.83.0",
     "serve-favicon": "~2.4.5",
-    "urllib": "^2.25.1"
+    "urllib": "^2.38.1"
   }
 }
